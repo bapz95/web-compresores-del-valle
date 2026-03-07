@@ -1,0 +1,58 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Services } from "../components/Services";
+import { SERVICES } from "../data/constants";
+
+// --- SCHEMA SEO AVANZADO ---
+const servicesSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service", // Tipo principal: Un Servicio (o conjunto de ellos)
+  serviceType: "Soluciones Industriales de Aire Comprimido",
+  provider: {
+    "@type": "LocalBusiness",
+    name: "Compresores del Valle",
+    image: new URL("/branding/logoCompresores1.png", Astro.site),
+    telephone: "+573127536787",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Cali",
+      addressRegion: "Valle del Cauca",
+      addressCountry: "CO",
+    },
+  },
+  areaServed: {
+    "@type": "Country",
+    name: "Colombia",
+  },
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Portafolio de Servicios Técnicos",
+    itemListElement: SERVICES.map((service, index) => ({
+      "@type": "Offer",
+      position: index + 1,
+      itemOffered: {
+        "@type": "Service",
+        name: service.title,
+        description: service.description,
+      },
+    })),
+  },
+};
+---
+
+<Layout
+  title="Servicio Técnico de Compresores Industriales en Cali | Compresores del Valle"
+  description="Mantenimiento y reparación de compresores industriales, redes neumáticas, lavaderos y montajes técnicos. Soporte desde Cali para todo Colombia."
+>
+  <!-- SCHEMA INYECTADO -->
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(servicesSchema)}
+  />
+  <!-- 
+    IMPORTANTE: client:load
+    Esto es obligatorio porque el componente usa useState y useEffect para
+    las animaciones del header y las galerías.
+  -->
+  <Services client:load />
+</Layout>

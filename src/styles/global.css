@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  
+    --brand-blue: #1E40AF;
+    --blue-dark: #1A3B7A;
+    --brand-yellow: #F2B705;
+    --hover-yellow: #D9A404;
+    /* WhatsApp */
+    --wa-green: #25D366;
+    --wa-green-ping: #22c55e;   
+    --wa-green-shadow: 22 163 74; 
+
+}
+
+.header-watermark {
+  background-image: url('/images/map.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

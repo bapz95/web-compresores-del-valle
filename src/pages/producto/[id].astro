@@ -1,0 +1,65 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { ProductDetail } from "../../components/ProductDetail.tsx";
+import { PRODUCTS } from "../../data/constants";
+
+// 1. Generación de rutas estáticas (INTACTO)
+export function getStaticPaths() {
+  return PRODUCTS.map((product) => ({
+    params: { id: product.id },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+
+// --- LÓGICA DE IMÁGENES PARA SEO ---
+// Necesitamos la URL de la imagen para los meta tags y el Schema.
+// Como tu sistema es híbrido (import vs string), resolvemos la ruta aquí.
+const imagePath = typeof product.image === 'string' ? product.image : product.image.src;
+const absoluteImageUrl = new URL(imagePath, Astro.site); // Convierte a URL absoluta (https://...)
+
+// --- LÓGICA DE PRECIOS ---
+const finalPrice = product.promoPrice || product.price;
+
+// --- SCHEMA.ORG (DATOS ESTRUCTURADOS) ---
+// Esto es lo que lee Google para mostrar "Rich Snippets"
+const productSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": product.name,
+  "image": [absoluteImageUrl],
+  "description": product.description,
+  "sku": product.id,
+  "brand": {
+    "@type": "Brand",
+    "name": product.brand || "Compresores del Valle" 
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": Astro.url.href,
+    "priceCurrency": "COP",
+    "price": finalPrice,
+    "availability": "https://schema.org/InStock", 
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+      "@type": "Organization",
+      "name": "Compresores del Valle"
+    }
+  }
+};
+---
+
+<Layout 
+  title={`${product.name} | Compresores del Valle`}
+  description={`Cotiza ${product.name}. ${product.description.substring(0, 150)}... Venta y soporte técnico en Cali.`}
+  image={imagePath}
+>
+  
+  <!-- INYECCIÓN DE SCHEMA EN EL HEAD -->
+  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+
+  <!-- COMPONENTE VISUAL (REACT) -->
+  <ProductDetail client:load />
+
+</Layout>

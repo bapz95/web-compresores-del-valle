@@ -1,0 +1,182 @@
+---
+import {Image} from 'astro:assets';
+import logo from "../assets/branding/logoCompresores1.png";
+---
+
+<footer class="bg-[#035aa6] text-white pt-16 pb-8 px-6 mt-20">
+  <div
+    class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
+  >
+    <div class="space-y-6">
+      <div class="flex flex-col items-center leading-none">
+        <Image
+          src={logo}
+          alt="Logo Footer"
+          class="h-28 w-auto"
+          
+        />
+      </div>
+      <p class="text-white/80 text-sm leading-relaxed">
+        Expertos en soluciones de aire comprimido industrial. Comprometidos con
+        la potencia, eficiencia y respaldo técnico de su empresa.
+      </p>
+    </div>
+
+    <div>
+      <h4 class="text-lg font-bold mb-6 border-l-4 border-(--brand-yellow) pl-3">
+        Navegación
+      </h4>
+      <ul class="space-y-4 text-sm text-white/80">
+        <li>
+          <a href="/" class="hover:text-(--brand-yellow) transition-colors">Inicio</a>
+        </li>
+        <li>
+          <a href="/productos" class="hover:text-(--brand-yellow) transition-colors"
+            >Productos</a
+          >
+        </li>
+        <li>
+          <a href="/servicios" class="hover:text-(--brand-yellow) transition-colors"
+            >Servicios</a
+          >
+        </li>
+        <li>
+          <a href="/nosotros" class="hover:text-(--brand-yellow) transition-colors"
+            >Nosotros</a
+          >
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="text-lg font-bold mb-6 border-l-4 border-(--brand-yellow) pl-3">
+        Contacto
+      </h4>
+      <ul class="space-y-4 text-sm text-white/80">
+        <li class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-(--brand-yellow) text-xl"
+            >phone_iphone</span
+          >
+          <a
+            href="https://wa.me/573127536787"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-(--brand-yellow) transition-colors"
+          >
+            312 753 6787
+          </a>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-(--brand-yellow) text-xl"
+            >phone_iphone</span
+          >
+          <a
+            href="https://wa.me/573174675905"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-(--brand-yellow) transition-colors"
+          >
+            317 467 5905
+          </a>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-(--brand-yellow) text-xl"
+            >location_on</span
+          >
+          <span>Cll 34 # 4b-30 Barrio Porvenir, Cali</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-(--brand-yellow) text-xl"
+            >mail</span
+          >
+          <span>ventascompresoresdelvalle@hotmail.com</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-(--brand-yellow) text-xl"
+            >mail</span
+          >
+          <span>compresoresdelvallesas@hotmail.com</span>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="text-lg font-bold mb-6 border-l-4 border-(--brand-yellow) pl-3">
+        Síguenos
+      </h4>
+      <div class="flex flex-wrap gap-4">
+        {/* WhatsApp */}
+        <a
+          href="https://wa.me/573127536787"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp"
+          class="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 transition-all duration-300 group"
+        >
+          <i
+            class="fa-brands fa-whatsapp text-xl text-white group-hover:text-(--wa-green) transition-all duration-300 group-hover:scale-110"
+          ></i>
+        </a>
+
+        {/* Facebook */}
+        <a
+          href="https://www.facebook.com/compresores.delvalle.3"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Facebook"
+          class="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 transition-all duration-300 group"
+        >
+          <i
+            class="fa-brands fa-facebook-f text-lg text-white group-hover:text-[#1877F2] transition-all duration-300 group-hover:scale-110"
+          ></i>
+        </a>
+
+        {/* Instagram */}
+        <a
+          href="https://www.instagram.com/compresoresdelvallesas"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram"
+          class="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 transition-all duration-300 group"
+        >
+          <i
+            class="fa-brands fa-instagram text-lg text-white group-hover:text-[#E4405F] transition-all duration-300 group-hover:scale-110"
+          ></i>
+        </a>
+
+        {/* TikTok */}
+        <a
+          href="https://www.tiktok.com/@compresoresdelvallesas"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="TikTok"
+          class="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 transition-all duration-300 group"
+        >
+          <i
+            class="fa-brands fa-tiktok text-lg text-white group-hover:text-[#000000] transition-all duration-300 group-hover:scale-110"
+          ></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/10 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4"
+  >
+    <p class="text-xs text-white/50">
+      © 2025 Compresores del Valle S.A.S. Todos los derechos reservados.
+    </p>
+    <div class="flex items-center gap-6">
+      <img
+        alt="Mastercard"
+        class="h-6 opacity-50 grayscale hover:grayscale-0 transition-all"
+        src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
+      />
+      <img
+        alt="Visa"
+        class="h-4 opacity-50 grayscale hover:grayscale-0 transition-all"
+        src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
+      />
+    </div>
+  </div>
+</footer>
