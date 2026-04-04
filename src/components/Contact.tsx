@@ -304,7 +304,7 @@ export const Contact: React.FC = () => {
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-[2rem] shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-4xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                     <div className="py-2">
                       {options.map((opt) => (
                         <button

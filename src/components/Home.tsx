@@ -1,23 +1,111 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SERVICES, PRODUCTS } from "../data/constants";
+import {
+  SERVICES,
+  PRODUCTS,
+  complementaryCategories,
+  compressorTypes,
+  successStories,
+  realClients,
+  slides,
+  sectors,
+  whyChooseUsFeatures,
+  BRAND_BADGES
+} from "../data/constants";
 import { formatCurrency } from "../utils/formatters";
-//clientes
-import Alfredo_M from "../assets/home/clientes/Alfredo-martinez.webp";
-import cubik from "../assets/home/clientes/cubik.webp";
-import ingenio_ML from "../assets/home/clientes/ingenio-maria-luisa.webp";
-import instaltek from "../assets/home/clientes/instaltek.webp";
-import intermodal from "../assets/home/clientes/intermodal.webp";
-import proestibas from "../assets/home/clientes/proestibas.webp";
-import riopaila from "../assets/home/clientes/riopaila.webp";
-import vallegres from "../assets/home/clientes/vallegres.webp";
+import { type ImageSource } from "../data/types";
+import { getImage } from "astro:assets";
+
+
+// --- COMPONENTE COLLAGE INTERACTIVO 3D POR QUÉ ELEGIRNOS---
+
+const CollageInteractivo: React.FC = () => {
+  const collageImages =[
+    {  src: "https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&q=80&w=600" },
+    {  src: "https://images.unsplash.com/photo-1590959651373-a3db0f38a961?auto=format&fit=crop&q=80&w=600" },
+    {  src: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=600" }
+  ];
+
+  const[positions, setPositions] = useState([0, 1, 2]); 
+
+  // Lógica híbrida para las insignias (Sellos PNG)
+  const getBadgeSrc = (badge: any) => {
+    if (!badge) return '';
+    return typeof badge === 'string' ? badge : badge.src;
+  };
+
+  const expSrc = getBadgeSrc(BRAND_BADGES?.experiencia);
+  const garSrc = getBadgeSrc(BRAND_BADGES?.garantia);
+
+  const handleSwap = (clickedImgIndex: number) => {
+    const clickedCurrentPos = positions[clickedImgIndex];
+    if (clickedCurrentPos === 1) return;
+
+    setPositions(prevPositions => {
+      const newPos = [...prevPositions];
+      const currentCenterImgIndex = prevPositions.findIndex(p => p === 1);
+      newPos[currentCenterImgIndex] = clickedCurrentPos;
+      newPos[clickedImgIndex] = 1;
+      return newPos;
+    });
+  };
+
+  const getTransformClasses = (pos: number) => {
+    if (pos === 0) return "translate-x-[-30%] md:translate-x-[-55%] rotate-[-12deg] z-10 scale-90 brightness-75 cursor-pointer hover:-translate-y-4 hover:brightness-95";
+    if (pos === 1) return "translate-x-0 rotate-0 z-30 scale-110 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] brightness-100";
+    if (pos === 2) return "translate-x-[30%] md:translate-x-[55%] rotate-[12deg] z-10 scale-90 brightness-75 cursor-pointer hover:-translate-y-4 hover:brightness-95";
+    return "";
+  };
+
+  return (
+    <div className="relative w-full h-[300px] md:h-[450px] flex items-center justify-center select-none mt-8">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md aspect-square bg-blue-50/50 rounded-full blur-3xl pointer-events-none"></div>
+
+      {collageImages.map((img, idx) => {
+        const currentPos = positions[idx];
+        return (
+          <div 
+            key={idx}
+            onClick={() => handleSwap(idx)}
+            className={`absolute w-44 md:w-60 aspect-[3/4] bg-white p-1 md:p-2 rounded-[1.5rem] md:rounded-[2rem] transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${getTransformClasses(currentPos)}`}
+          >
+            <div className="w-full h-full bg-slate-50 rounded-xl md:rounded-[1.5rem] overflow-hidden relative flex items-center justify-center border border-slate-100">
+              <img src={img.src} />
+            </div>
+
+            {/* SELLO EXPERIENCIA (Arriba Izquierda, Inclinado) */}
+            {currentPos === 1 && expSrc && (
+              <img 
+                src={expSrc} 
+                alt="Experiencia CDV" 
+                className="absolute -top-6 -left-6 md:-top-10 md:-left-10 w-24 md:w-32 z-40 -rotate-12 drop-shadow-xl animate-in zoom-in duration-500 pointer-events-none"
+              />
+            )}
+
+            {/* SELLO GARANTÍA (Arriba Derecha, Atrás) */}
+            {currentPos === 2 && garSrc && (
+              <img 
+                src={garSrc} 
+                alt="Garantía" 
+                className="absolute -top-4 -right-4 md:-top-6 md:-right-6 w-20 md:w-28 z-20 rotate-6 drop-shadow-lg opacity-90 hover:opacity-100 transition-opacity animate-in fade-in duration-500 pointer-events-none"
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 // --- COMPONENTE ANTES/DESPUÉS ---
-const BeforeAfterSlider: React.FC<{ before: string; after: string }> = ({
-  before,
-  after,
-}) => {
+const BeforeAfterSlider: React.FC<{
+  before: ImageSource;
+  after: ImageSource;
+}> = ({ before, after }) => {
   const [sliderPos, setSliderPos] = useState(50);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const beforeSrc = typeof before === "string" ? before : before.src;
+  const afterSrc = typeof after === "string" ? after : after.src;
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!containerRef.current) return;
@@ -35,18 +123,26 @@ const BeforeAfterSlider: React.FC<{ before: string; after: string }> = ({
       onTouchMove={handleMove}
     >
       <div className="absolute inset-0 w-full h-full">
-        <img src={before} alt="Antes" className="w-full h-full object-cover" />
+        <img
+          src={beforeSrc}
+          alt="Antes"
+          className="w-full h-full object-cover"
+        />
         <div className="absolute top-8 right-8 z-10 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-widest border border-white/20">
-          Estado Inicial
+          Antes
         </div>
       </div>
       <div
         className="absolute inset-0 w-full h-full z-20"
         style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
       >
-        <img src={after} alt="Después" className="w-full h-full object-cover" />
+        <img
+          src={afterSrc}
+          alt="Después"
+          className="w-full h-full object-cover"
+        />
         <div className="absolute top-8 left-8 z-30 bg-(--brand-yellow) text-[#2553A8] text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-widest shadow-xl">
-          Restauración CDV
+          Después
         </div>
       </div>
       <div
@@ -62,127 +158,6 @@ const BeforeAfterSlider: React.FC<{ before: string; after: string }> = ({
     </div>
   );
 };
-
-// --- DATOS ---
-const successStories = [
-  {
-    title: "Overhaul de Cabezote de Pistón",
-    subtitle: "Restauración de compresión y estética industrial",
-    description:
-      "Equipo con 5 años de abandono. Se realizó limpieza por ultrasonido, rectificación de válvulas y pintura térmica.",
-    before:
-      "https://images.unsplash.com/photo-1590959651373-a3db0f38a961?auto=format&fit=crop&q=80&w=800",
-    after:
-      "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    title: "Modernización de Red de Aire",
-    subtitle: "Eliminación de fugas y caída de presión",
-    description:
-      "Sustitución de tubería de hierro galvanizado oxidado por sistema de polipropileno termofusionado de alta eficiencia.",
-    before:
-      "https://images.unsplash.com/photo-1541625602330-2277a1cd1f59?auto=format&fit=crop&q=80&w=800",
-    after:
-      "https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    title: "Restauración de Motor Eléctrico",
-    subtitle: "Mantenimiento preventivo IE3",
-    description:
-      "Bobinado completo y cambio de rodamientos SKF para un motor de 50HP en sector azucarero.",
-    before:
-      "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=800",
-    after:
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800",
-  },
-];
-
-const slides = [
-  {
-    title: "Venta de Compresores Industriales de Alto Rendimiento",
-    subtitle: "Soluciones en Aire Comprimido",
-    description:
-      "Comercializamos compresores de aire industriales, secadores, filtros y sistemas de aire comprimido diseñados para operación continua, alto rendimiento en entornos industriales.",
-    image:
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1600",
-    primaryCta: {
-      text: "VER CATÁLOGO",
-      link: "/productos",
-    },
-    secondaryCta: {
-      text: "COTIZAR EQUIPO",
-      link: "https://wa.me/573127536787?text=Hola,%20me%20interesa%20cotizar%20un%20equipo",
-    },
-  },
-  {
-    title: "Soporte Técnico Especializado",
-    subtitle: "Mantenimiento y Reparación de compresores industriales",
-    description:
-      "Diagnóstico, mantenimiento preventivo y correctivo, y reparación de compresores industriales para garantizar lacontinuidad operativa.",
-    image:
-      "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=1600",
-    primaryCta: {
-      text: "VER SERVICIOS TÉCNICOS",
-      link: "/servicios",
-    },
-    secondaryCta: {
-      text: "SOLICITAR SERVICIO",
-      link: "https://wa.me/573127536787?text=Hola,%20me%20interesa%20solicitar%20un%20servicio",
-    },
-  },
-  {
-    title: "Soporte industrial confiable para su operación",
-    subtitle: "Más de 25 años respaldando la industria",
-    description:
-      "Acompañamos a la industria con soporte técnico confiable, repuestos certificados y atención especializada para garantizar la continuidad de sus procesos productivos.",
-    image:
-      "https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&q=80&w=1600",
-    primaryCta: {
-      text: "CONOCE NUESTRA EMPRESA",
-      link: "/nosotros",
-    },
-    secondaryCta: {
-      text: "HABLAR CON UN ASESOR",
-      link: "https://wa.me/573127536787?text=Hola,%20me%20interesa%20cotizar%20un%20equipo",
-    },
-  },
-];
-
-const sectors = [
-  {
-    name: "Sector Azucarero",
-    icon: "agriculture",
-    desc: "Ingenios y Molienda",
-  },
-  {
-    name: "Alimentos y Bebidas",
-    icon: "bakery_dining",
-    desc: "Plantas de Producción",
-  },
-  {
-    name: "Farmacéutica",
-    icon: "medical_services",
-    desc: "Aire de Alta Pureza",
-  },
-  {
-    name: "Automotriz",
-    icon: "precision_manufacturing",
-    desc: "Ensamblaje y Pintura",
-  },
-  { name: "Metalmecánica", icon: "construction", desc: "Corte y Soldadura" },
-  { name: "Logística", icon: "inventory_2", desc: "Empaque y Distribución" },
-];
-
-const realClients = [
-  { name: "Alfredo Martinez", logo: Alfredo_M },
-  { name: "Cubik", logo: cubik },
-  { name: "Ingenio María Luisa", logo: ingenio_ML },
-  { name: "Instaltek", logo: instaltek },
-  { name: "Intermodal", logo: intermodal },
-  { name: "Pro Estibas", logo: proestibas },
-  { name: "Río Paila", logo: riopaila },
-  { name: "Vallegres", logo: vallegres },
-];
 
 // --- COMPONENTE PRINCIPAL ---
 export const Home: React.FC = () => {
@@ -218,6 +193,7 @@ export const Home: React.FC = () => {
       <section className="relative h-[70vh] md:h-[65vh] min-h-130 md:min-h-140 max-h-180 overflow-hidden bg-slate-900">
         {slides.map((slide, index) => {
           const isActive = index === currentSlide;
+          const imgSrc = typeof slide.image === "string" ? slide.image : slide.image.src;
           return (
             <div
               key={index}
@@ -227,7 +203,7 @@ export const Home: React.FC = () => {
             >
               <div className="absolute inset-0 w-full h-full overflow-hidden">
                 <img
-                  src={slide.image}
+                  src={imgSrc}
                   alt={slide.title}
                   className={`w-full h-full object-cover transition-transform duration-7000 ease-out ${
                     isActive ? "scale-110" : "scale-100"
@@ -236,7 +212,7 @@ export const Home: React.FC = () => {
               </div>
 
               {/* Gradiente (Quieto) */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#2553A8] via-[#2553A8]/50 to-black/30"></div>
+              <div className="absolute inset-0 bg-linear-to-t from-[#2553A8] via-[#2553A8]/50 to-black/30"></div>
 
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 sm:p-12 space-y-6 md:space-y-8">
                 {/* Subtítulo animado suavemente hacia arriba */}
@@ -265,7 +241,7 @@ export const Home: React.FC = () => {
                   {/* Botones Dinámicos */}
                   <a
                     href={slide.primaryCta.link}
-                    className="bg-(--brand-yellow) hover:bg-[#D9A404] text-[#2553A8] font-black py-4 px-8 md:py-5 md:px-12 rounded-2xl transition-all shadow-xl shadow-yellow-500/20 active:scale-95 uppercase tracking-widest text-xs md:text-sm"
+                    className="bg-(--brand-yellow) hover:bg-(--hover-yellow) text-[#2553A8] font-black py-4 px-8 md:py-5 md:px-12 rounded-2xl transition-all shadow-xl shadow-yellow-500/20 active:scale-95 uppercase tracking-widest text-xs md:text-sm"
                   >
                     {slide.primaryCta.text}
                   </a>
@@ -284,7 +260,7 @@ export const Home: React.FC = () => {
           );
         })}
 
-        {/* Navigation Arrows (Se mantienen igual) */}
+        {/* Navigation Arrows */}
         <div className="absolute inset-x-4 md:inset-x-8 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none z-30">
           <button
             onClick={() =>
@@ -312,10 +288,10 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 2. Stats Counter */}
-      <section className="max-w-5xl mx-auto px-4">
-        <div className="bg-white rounded-[3rem] shadow-2xl border border-slate-100 -mt-32 relative z-30 p-10 grid grid-cols-2 md:grid-cols-3 gap-8 text-center">
+      <section className="max-w-4xl mx-auto px-8">
+        <div className="bg-white rounded-4xl shadow-2xl border border-slate-100 -mt-35 relative z-30 py-1.5 grid grid-cols-2 md:grid-cols-3 gap-8 text-center">
           <div>
-            <p className="text-4xl md:text-6xl font-black text-[#2553A8]">
+            <p className="text-3xl md:text-4xl font-black text-[#2553A8]">
               25+
             </p>
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">
@@ -323,7 +299,7 @@ export const Home: React.FC = () => {
             </p>
           </div>
           <div>
-            <p className="text-4xl md:text-6xl font-black text-[#2553A8]">
+            <p className="text-3xl md:text-4xl font-black text-[#2553A8]">
               500+
             </p>
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">
@@ -331,7 +307,7 @@ export const Home: React.FC = () => {
             </p>
           </div>
           <div>
-            <p className="text-4xl md:text-6xl font-black text-[#2553A8]">
+            <p className="text-3xl md:text-4xl font-black text-[#2553A8]">
               1.2k +
             </p>
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">
@@ -344,7 +320,7 @@ export const Home: React.FC = () => {
       {/* 3. SECCIÓN DE PROMOCIONES (Solo se muestra si hay productos con promoPrice) */}
       {promoProducts.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 space-y-12">
-          <div className="flex flex-col md:flex-row justify-between items-end gap-6">
+          <div className="flex flex-col md:flex-row justify-between gap-6">
             <div className="space-y-4">
               <span className="text-red-500 font-black uppercase tracking-[0.3em] text-sm animate-pulse">
                 Ofertas del Mes
@@ -367,28 +343,51 @@ export const Home: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {promoProducts.map((product) => {
-              // Manejo de imagen híbrida (IMPORTANTE PARA EVITAR ERRORES)
-              const imgSrc =
+              // --- LÓGICA DE HOVER DE IMÁGENES  ---
+              const mainImgSrc =
                 typeof product.image === "string"
                   ? product.image
                   : product.image.src;
 
+              const hoverImgSrc =
+                product.images && product.images.length > 1
+                  ? typeof product.images[1] === "string"
+                    ? product.images[1]
+                    : product.images[1].src
+                  : null;
+
               return (
-                <div
+                <a
                   key={product.id}
+                  href={`/producto/${product.id}`} 
                   className="group bg-white rounded-3xl border border-slate-100 hover:border-red-200 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col relative"
                 >
                   {/* Etiqueta Flotante */}
-                  <div className="absolute top-4 right-4 z-10 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
+                  <div className="absolute top-4 right-4 z-20 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
                     ¡Oferta!
                   </div>
 
-                  <div className="aspect-square bg-slate-50 relative overflow-hidden">
+                  {/* CONTENEDOR DE IMAGEN CON EFECTO HOVER */}
+                  <div className="aspect-square bg-slate-50 relative overflow-hidden p-6">
+                    {/* IMAGEN 1 */}
                     <img
-                      src={imgSrc}
+                      src={mainImgSrc}
                       alt={product.name}
-                      className="w-full h-full object-cover mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
+                      className={`w-full h-full object-contain mix-blend-multiply transition-all duration-700 ease-in-out ${hoverImgSrc ? "group-hover:opacity-0" : "group-hover:scale-110"}`}
+                      loading="lazy"
                     />
+
+                    {/* IMAGEN 2 (Solo aparece si existe) */}
+                    {hoverImgSrc && (
+                      <div className="absolute inset-0 p-6 opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100 pointer-events-none mix-blend-multiply">
+                        <img
+                          src={hoverImgSrc}
+                          alt={`${product.name} vista 2`}
+                          className="w-full h-full object-contain mix-blend-multiply scale-100 transition-transform duration-700 ease-out group-hover:scale-[1.08] group-hover:duration-2000"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-6 flex flex-col grow space-y-3">
@@ -402,21 +401,161 @@ export const Home: React.FC = () => {
                     <div className="mt-auto pt-2">
                       <div className="flex flex-col">
                         <span className="text-xs text-slate-400 line-through font-bold">
-                          ${formatCurrency(product.price)}
+                          {formatCurrency(product.price)}
                         </span>
                         <span className="text-xl font-black text-red-600">
-                          ${formatCurrency(product.promoPrice!)}
+                          {formatCurrency(product.promoPrice!)}
                         </span>
                       </div>
                     </div>
                   </div>
-                </div>
+                </a>
               );
             })}
           </div>
         </section>
       )}
-      {/* 4. Services Overview */}
+      {/* 4. SECCIÓN CATEGORIAS PRINCIPALES */}
+      <section className="max-w-7xl mx-auto px-4 space-y-16">
+        <div className="text-center space-y-4">
+          <span className="text-(--brand-yellow) font-black uppercase tracking-[0.3em] text-sm">
+            Tipos de compresores
+          </span>
+          <h2 className="text-4xl md:text-5xl font-black text-[#2553A8] uppercase tracking-tighter">
+            Tenemos una solución para cada necesidad
+          </h2>
+          <p className="text-slate-500 font-medium text-lg max-w-3xl mx-auto leading-relaxed">
+            En Compresores del Valle contamos con la más amplia gama de{" "}
+            <span className="font-bold text-[#2553A8]">
+              compresores de pistón, tornillo y libres de aceite
+            </span>
+            . Diseñados para talleres, industrias y aplicaciones exigentes.
+          </p>
+          <div className="h-1.5 w-24 bg-(--brand-yellow) mx-auto rounded-full mt-6"></div>
+        </div>
+
+        {/* Grid de Tarjetas Horizontales */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {compressorTypes.map((type, idx) => {
+            const imgSrc =
+              typeof type.image === "string" ? type.image : type.image.src;
+            return (
+              <a
+                key={idx}
+                href={type.link}
+                className="group flex flex-col sm:flex-row bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden"
+              >
+                {/* Lado Izquierdo: Imagen */}
+                <div className="w-full sm:w-5/12 bg-slate-50 p-6 flex items-center justify-center relative overflow-hidden shrink-0">
+                  <img
+                    src={imgSrc}
+                    alt={type.title}
+                    className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+
+                {/* Lado Derecho: Contenido */}
+                <div className="w-full sm:w-7/12 p-8 flex flex-col justify-center">
+                  <h3 className="text-2xl font-black text-[#2553A8] uppercase tracking-tight mb-3 group-hover:text-(--brand-yellow) transition-colors">
+                    {type.title}
+                  </h3>
+                  <p className="text-slate-500 font-medium text-sm leading-relaxed mb-6">
+                    {type.description}
+                  </p>
+                  <div className="mt-auto">
+                    <span className="inline-flex items-center gap-2 bg-(--brand-yellow) text-[#2553A8] font-black text-[10px] uppercase tracking-widest px-5 py-2.5 rounded-xl group-hover:bg-[#d9a404] transition-colors shadow-md">
+                      VER CATEGORÍA
+                      <span className="material-symbols-outlined text-sm">
+                        arrow_forward
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 4.5. SECCIÓN PRODUCTOS COMPLEMENTARIOS */}
+      <section className="max-w-7xl mx-auto px-4 space-y-16 py-12">
+        {/* Encabezado */}
+        <div className="text-center space-y-4">
+          <span className="text-(--brand-yellow) font-black uppercase tracking-[0.3em] text-sm">
+            Productos Complementarios
+          </span>
+          <h2 className="text-3xl md:text-5xl font-black text-[#2553A8] uppercase tracking-tighter">
+            Todo lo que tu sistema de aire necesita
+          </h2>
+          <p className="text-slate-500 font-medium text-base md:text-lg max-w-4xl mx-auto leading-relaxed">
+            Más allá del compresor, asegura la eficiencia y calidad de tu
+            operación. Tenemos <span className="text-[#2553A8] font-bold">repuestos, tanques, motores, herramientas y
+            accesorios </span> para un sistema completo y sin fallas.
+          </p>
+          <div className="h-1.5 w-24 bg-(--brand-yellow) mx-auto rounded-full mt-4"></div>
+        </div>
+
+        {/* Layout Dividido */}
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch">
+          {/* Lado Izquierdo */}
+          <div className="w-full lg:w-5/12 grid grid-cols-2 gap-4">
+            {complementaryCategories.map((cat, idx) => {
+              const imgSrc =
+                typeof cat.image === "string" ? cat.image : cat.image.src;
+
+              return (
+                <a
+                  key={idx}
+                  href={cat.link}
+                  className="group bg-white rounded-4xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-(--brand-yellow) transition-all duration-300 p-4 sm:p-6 flex flex-col items-center justify-center text-center gap-3 h-full min-h-40"
+                >
+                  <div className="h-16 sm:h-20 w-full flex items-center justify-center shrink-0">
+                    <img
+                      src={imgSrc}
+                      alt={cat.title}
+                      className="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <h3 className="text-[10px] sm:text-xs font-black text-[#2553A8] uppercase tracking-wide leading-tight group-hover:text-(--hover-yellow) transition-colors">
+                    {cat.title}
+                  </h3>
+                </a>
+              );
+            })}
+          </div>
+          <div className="w-full lg:w-7/12 relative flex items-center justify-center bg-slate-50/50 rounded-[3rem] p-8 md:p-12 border border-slate-100 min-h-100 lg:min-h-125 overflow-hidden group">
+            {/* Fondo decorativo (Círculo sutil) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 aspect-square bg-blue-100/50 rounded-full blur-3xl pointer-events-none"></div>
+
+            {/* Imagen del collage */}
+            <img
+              // RECUERDA: Cambiar esto por tu collage PNG transparente cuando lo tengas
+              src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200"
+              alt="Equipos complementarios Compresores del Valle"
+              className="w-full h-full object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-700 relative z-10"
+            />
+
+            {/* Insignia de Confianza flotante */}
+            <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 bg-white p-4 md:p-5 rounded-2xl shadow-2xl border border-slate-100 flex items-center gap-3 animate-bounce-slow z-20">
+              <span className="material-symbols-outlined text-(--brand-yellow) text-3xl md:text-4xl">
+                workspace_premium
+              </span>
+              <div className="flex flex-col text-left">
+                <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Respaldo Total
+                </span>
+                <span className="text-xs md:text-sm font-black text-[#2553A8] uppercase leading-none">
+                  Repuestos
+                  <br />
+                  Originales
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Services Overview */}
       <section className="max-w-7xl mx-auto px-4 space-y-16">
         <div className="text-center space-y-4">
           <span className="text-(--brand-yellow) font-black uppercase tracking-[0.3em] text-sm">
@@ -459,7 +598,7 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 5. SUCCESS STORIES */}
+      {/* 6. SUCCESS STORIES */}
       <section className="bg-slate-900 py-32 relative overflow-hidden text-white">
         <div className="absolute inset-0 grid-pattern opacity-5"></div>
         <div className="max-w-7xl mx-auto px-4 relative z-10">
@@ -542,7 +681,7 @@ export const Home: React.FC = () => {
                       <span className="text-[10px] font-black uppercase tracking-widest text-white/30">
                         Garantía
                       </span>
-                      <span className="text-2xl font-black">12 MESES</span>
+                      <span className="text-2xl font-black">3 MESES</span>
                     </div>
                   </div>
                 </div>
@@ -562,57 +701,116 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. Experience Section */}
-      <section className="bg-white py-12 px-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          <div className="relative">
-            <div className="absolute inset-0 bg-(--brand-yellow)/10 rounded-[4rem] translate-x-6 translate-y-6"></div>
-            <img
-              src="https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&q=80&w=800"
-              className="rounded-[4rem] shadow-2xl relative z-10 w-full object-cover h-125"
-              alt="Planta de Compresores"
-            />
-          </div>
-          <div className="space-y-8">
-            <h2 className="text-5xl font-black text-[#2553A8] leading-tight uppercase">
-              EXPERIENCIA QUE <br />
-              <span className="text-(--brand-yellow)">TRANSFORMA</span>{" "}
-              INDUSTRIAS
-            </h2>
-            <p className="text-slate-500 text-lg leading-relaxed">
-              En Compresores del Valle S.A.S. entendemos que cada segundo de
-              operación cuenta. Por eso, más que vender equipos, brindamos
-              soluciones técnicas en aire comprimido que aseguran la continuidad
-              operativa y la confiabilidad de su planta.
-            </p>
-            <ul className="space-y-4">
-              {[
-                {
-                  icon: "verified",
-                  t: "Soporte técnico especializado en aire comprimido industrial",
-                },
-                { icon: "speed", t: "Respuesta Técnica en menos de 4 horas" },
-                {
-                  icon: "engineering",
-                  t: "Mantenimiento preventivo y correctivo industrial",
-                },
-              ].map((item, i) => (
-                <li
-                  key={i}
-                  className="flex items-center gap-4 text-slate-700 font-bold"
-                >
-                  <span className="material-symbols-outlined text-(--brand-yellow) text-3xl font-black">
-                    {item.icon}
-                  </span>
-                  {item.t}
-                </li>
+      {/* --- 7. POR QUÉ ELEGIRNOS (Textos inmersos y Flip Vertical 3D) --- */}
+      <section className="py-12 md:py-16 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4">
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            {/* --- COLUMNA IZQUIERDA (Íconos 1 y 2) --- */}
+            <div className="lg:col-span-3 flex flex-col gap-4 lg:gap-8 order-2 lg:order-1">
+              {whyChooseUsFeatures.slice(0, 2).map((feat, idx) => (
+                <div key={idx} className="group relative bg-white lg:bg-transparent lg:cursor-pointer lg:[perspective:1000px] rounded-3xl p-4 lg:p-0 border border-slate-100 lg:border-none shadow-sm lg:shadow-none mb-4 lg:mb-0 lg:h-56">
+                   
+                   {/* MOBILE VIEW: Estático y limpio */}
+                   <div className="flex lg:hidden flex-row items-center gap-4">
+                      <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center shrink-0 text-[#2553A8]">
+                         <span className="material-symbols-outlined text-4xl">{feat.icon}</span>
+                      </div>
+                      <div className="flex-1 text-left">
+                         <h3 className="font-black text-[#2553A8] uppercase text-[11px] tracking-widest mb-1">{feat.title}</h3>
+                         <p className="text-slate-500 text-[10px] leading-relaxed font-medium">{feat.description}</p>
+                      </div>
+                   </div>
+
+                   {/* DESKTOP VIEW: Flip Card Hacia Arriba (Animación suave y reparada) */}
+                   <div className="hidden lg:block relative w-full h-full transition-transform duration-1000 ease-in-out [transform-style:preserve-3d] lg:group-hover:[transform:rotateX(180deg)]">
+                     
+                     {/* FRENTE: Ícono Gigante (80px) */}
+                     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-white rounded-3xl border border-slate-100 shadow-sm [backface-visibility:hidden]">
+                        <span className="material-symbols-outlined text-[#2553A8] mb-4 drop-shadow-sm" style={{ fontSize: '60px' }}>{feat.icon}</span>
+                        <h3 className="font-black text-slate-700 uppercase text-xs tracking-widest px-2 text-center">{feat.title}</h3>
+                     </div>
+                     
+                     {/* DORSO: Título y Descripción (Derecho para leer) */}
+                     <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white shadow-2xl rounded-3xl border border-[#2553A8]/20 [backface-visibility:hidden] [transform:rotateX(180deg)]">
+                        <h3 className="font-black text-[#2553A8] uppercase text-xs tracking-widest mb-3 leading-tight text-center">{feat.title}</h3>
+                        <p className="text-slate-500 text-xs leading-relaxed font-medium text-center">
+                          {feat.description}
+                        </p>
+                     </div>
+
+                   </div>
+                </div>
               ))}
-            </ul>
+            </div>
+
+            {/* --- COLUMNA CENTRAL (Textos inmersos + Collage) --- */}
+            <div className="lg:col-span-6 flex flex-col items-center order-1 lg:order-2">
+              
+              <div className="text-center space-y-3 mb-4 md:mb-8 px-4">
+                <span className="text-red-500 font-black uppercase tracking-[0.3em] text-[10px] md:text-xs animate-pulse">
+                  Por qué elegirnos
+                </span>
+                <h2 className="text-3xl md:text-4xl font-black text-[#2553A8] uppercase tracking-tighter">  
+                  TU ESPECIALISTA EN COMPRESORES
+                </h2>
+                <p className="text-slate-500 font-medium text-sm max-w-lg mx-auto leading-relaxed">
+                  Miles de equipos operando a nivel nacional. 
+                  Respaldados por <strong className="text-[#2553A8]">más de 25 años de experiencia </strong> y consolidados como una empresa lider en el sector.
+                </p>
+              </div>
+
+              {/* Collage 3D */}
+              <div className="w-full transform scale-90 md:scale-100">
+                <CollageInteractivo />
+              </div>
+              
+            </div>
+
+            {/* --- COLUMNA DERECHA (Íconos 3 y 4) --- */}
+            <div className="lg:col-span-3 flex flex-col gap-4 lg:gap-8 order-3">
+              {whyChooseUsFeatures.slice(2, 4).map((feat, idx) => (
+                <div key={idx} className="group relative bg-white lg:bg-transparent lg:cursor-pointer lg:[perspective:1000px] rounded-3xl p-4 lg:p-0 border border-slate-100 lg:border-none shadow-sm lg:shadow-none mb-4 lg:mb-0 lg:h-56">
+                   
+                   {/* MOBILE VIEW */}
+                   <div className="flex lg:hidden flex-row items-center gap-4">
+                      <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center shrink-0 text-[#2553A8]">
+                         <span className="material-symbols-outlined text-4xl">{feat.icon}</span>
+                      </div>
+                      <div className="flex-1 text-left">
+                         <h3 className="font-black text-[#2553A8] uppercase text-[11px] tracking-widest mb-1">{feat.title}</h3>
+                         <p className="text-slate-500 text-[10px] leading-relaxed font-medium">{feat.description}</p>
+                      </div>
+                   </div>
+
+                   {/* DESKTOP VIEW (Flip Hacia Arriba) */}
+                   <div className="hidden lg:block relative w-full h-full transition-transform duration-1000 ease-in-out [transform-style:preserve-3d] lg:group-hover:[transform:rotateX(180deg)]">
+                     
+                     {/* FRENTE */}
+                     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-white rounded-3xl border border-slate-100 shadow-sm [backface-visibility:hidden]">
+                        <span className="material-symbols-outlined text-[#2553A8] mb-4 drop-shadow-sm" style={{ fontSize: '60px' }}>{feat.icon}</span>
+                        <h3 className="font-black text-slate-700 uppercase text-xs tracking-widest px-2 text-center">{feat.title}</h3>
+                     </div>
+                     
+                     {/* DORSO */}
+                     <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white shadow-2xl rounded-3xl border border-[#2553A8]/20 [backface-visibility:hidden] [transform:rotateX(180deg)]">
+                        <h3 className="font-black text-[#2553A8] uppercase text-xs tracking-widest mb-3 leading-tight text-center">{feat.title}</h3>
+                        <p className="text-slate-500 text-[11px] leading-relaxed font-medium text-center">
+                          {feat.description}
+                        </p>
+                     </div>
+
+                   </div>
+                </div>
+              ))}
+            </div>
+
           </div>
         </div>
       </section>
 
-      {/* 7. Sectors and Clients */}
+      {/* 8. Sectors and Clients */}
       <section className="space-y-24 py-12">
         <div className="max-w-7xl mx-auto px-4 space-y-16">
           <div className="text-center space-y-4">
@@ -684,7 +882,7 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 8. Industrial Footer CTA */}
+      {/* 9. Industrial Footer CTA */}
       <section className="px-4 max-w-7xl mx-auto">
         <div className="bg-[#2553A8] rounded-[4rem] p-16 md:p-24 text-center space-y-8 relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">

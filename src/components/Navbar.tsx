@@ -1,27 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { PRODUCTS, SERVICES } from "../data/constants";
+import { PRODUCTS, SERVICES, search_keywords } from "../data/constants";
 import { type Product, Category, SubCategory } from "../data/types";
 import mapBG from "../assets/branding/map.png";
 import logo from "../assets/branding/logoCompresores1.png";
-
-// ... (LÓGICA MATEMÁTICA INTACTA - getLevenshteinDistance) ...
-const getLevenshteinDistance = (a: string, b: string): number => {
-  const matrix = Array.from({ length: a.length + 1 }, () =>
-    Array.from({ length: b.length + 1 }, (_, i) => i),
-  );
-  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1,
-        matrix[i][j - 1] + 1,
-        matrix[i - 1][j - 1] + cost,
-      );
-    }
-  }
-  return matrix[a.length][b.length];
-};
+import { removeAccents, getLevenshteinDistance } from "../utils/searchUtils";
 
 type SearchResult = {
   type: "product" | "category" | "subcategory";
@@ -39,45 +21,38 @@ export const Navbar: React.FC = () => {
   const [correction, setCorrection] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // 1. NUEVO ESTADO: Ruta actual
+  //  Detectar Scroll
+  const [isScrolled, setIsScrolled] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
-
   const searchRef = useRef<HTMLDivElement>(null);
-  const keywords = [
-    "compresores",
-    "compresor",
-    "tornillo",
-    "pistón",
-    "cabezotes",
-    "repuestos",
-    "motores",
-    "tanques",
-    "hidraulica",
-    "neumatica",
-  ];
+
+  // --- EFECTO PARA ESCUCHAR EL SCROLL ---
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // --- EFECTO PARA DETECTAR LA RUTA ACTIVA EN ASTRO ---
   useEffect(() => {
-    // Función para actualizar la ruta
     const updatePath = () => setCurrentPath(window.location.pathname);
-
-    // Ejecutar al inicio
     updatePath();
-
-    // Escuchar cambios de página de Astro (View Transitions)
     document.addEventListener("astro:page-load", updatePath);
-
     return () => document.removeEventListener("astro:page-load", updatePath);
   }, []);
 
-  // Helper para saber si un link está activo
-  // exact: true para Home ('/'), false para secciones (/productos también activa /productos/detalle)
   const isActive = (path: string, exact = false) => {
     if (exact) return currentPath === path;
     return currentPath.startsWith(path);
   };
 
-  // --- RESTO DE EFECTOS (INTACTOS) ---
+  // --- RESTO DE EFECTOS ---
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -91,40 +66,62 @@ export const Navbar: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ... (Tu useEffect del buscador intacto) ...
+  // --- EFECTO DEL BUSCADOR  ---
+  // --- EFECTO DEL BUSCADOR (OPTIMIZADO) ---
   useEffect(() => {
     if (searchQuery.length > 1) {
-      // ... tu lógica de búsqueda ...
-      const query = searchQuery.toLowerCase();
-      const results: SearchResult[] = [];
+      const query = removeAccents(searchQuery);
+      const results: SearchResult[] =[];
 
+      // 1. Buscar Categorías
       Object.values(Category).forEach((cat) => {
-        if (cat.toLowerCase().includes(query))
+        if (removeAccents(cat).includes(query)) {
           results.push({ type: "category", label: cat, data: cat });
-      });
-      Object.values(SubCategory).forEach((sub) => {
-        if (sub.toLowerCase().includes(query))
-          results.push({ type: "subcategory", label: sub, data: sub });
+        }
       });
 
+      // 2. Buscar Subcategorías (Con relación padre-hijo blindada)
+      Object.values(SubCategory).forEach((sub) => {
+        if (removeAccents(sub).includes(query)) {
+          // Definimos manualmente el papá para no fallar nunca
+          let parentCat = "";
+          if ([SubCategory.TORNILLO, SubCategory.PISTON, SubCategory.AIRESECO].includes(sub)) {
+            parentCat = Category.COMPRESORES;
+          } else if ([SubCategory.ELECTRICOS, SubCategory.GASOLINA, SubCategory.DIESEL].includes(sub)) {
+            parentCat = Category.MOTORES;
+          }
+          
+          results.push({ 
+            type: "subcategory", 
+            label: sub, 
+            data: { sub: sub, cat: parentCat } 
+          });
+        }
+      });
+
+      // 3. Buscar Productos
       const allProductMatches = PRODUCTS.filter(
         (p) =>
-          p.name.toLowerCase().includes(query) ||
-          p.brand.toLowerCase().includes(query) ||
-          p.category.toLowerCase().includes(query),
+          removeAccents(p.name).includes(query) ||
+          removeAccents(p.brand).includes(query)
+
       );
+
       setTotalMatches(allProductMatches.length);
+
       allProductMatches.slice(0, 4).forEach((p) => {
         results.push({ type: "product", label: p.name, data: p });
       });
+
       setCombinedResults(results);
 
+      // 4. Lógica "¿Quisiste decir...?"
       if (results.length === 0) {
         let bestCorrection: string | null = null;
         query.split(" ").forEach((word) => {
           if (word.length < 4) return;
-          keywords.forEach((key) => {
-            const distance = getLevenshteinDistance(word, key);
+          search_keywords.forEach((key) => {
+            const distance = getLevenshteinDistance(word, removeAccents(key));
             if (distance > 0 && distance <= 2) bestCorrection = key;
           });
         });
@@ -139,8 +136,9 @@ export const Navbar: React.FC = () => {
       setCorrection(null);
       setShowSuggestions(false);
     }
-  }, [searchQuery]);
+  },[searchQuery]);
 
+  // --- MANEJADOR DE CLIC EN RESULTADOS ---
   const handleSearchSubmit = (e: React.FormEvent, item?: SearchResult) => {
     e.preventDefault();
     if (item) {
@@ -148,10 +146,12 @@ export const Navbar: React.FC = () => {
         const p = item.data as Product;
         window.location.href = `/productos?cat=${encodeURIComponent(p.category)}${p.subCategory ? `&sub=${encodeURIComponent(p.subCategory)}` : ""}&q=${encodeURIComponent(p.name)}`;
       }
-      if (item.type === "category")
+      if (item.type === "category") {
         window.location.href = `/productos?cat=${encodeURIComponent(item.data)}`;
-      if (item.type === "subcategory")
-        window.location.href = `/productos?sub=${encodeURIComponent(item.data)}`;
+      }
+      if (item.type === "subcategory") {
+        window.location.href = `/productos?cat=${encodeURIComponent(item.data.cat)}&sub=${encodeURIComponent(item.data.sub)}`;
+      }
     } else if (searchQuery.trim()) {
       window.location.href = `/productos?q=${encodeURIComponent(searchQuery.trim())}`;
     }
@@ -191,18 +191,15 @@ export const Navbar: React.FC = () => {
     setActiveMenu(null);
     setIsOpen(false);
   };
-  // Función para manejar navegación inteligente en Servicios
+
   const handleServiceClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     serviceId: string,
   ) => {
-    // Si ya estamos en la página de servicios...
     if (window.location.pathname === "/servicios") {
-      e.preventDefault(); // 1. Evitar recarga/salto al top
-
+      e.preventDefault();
       const element = document.getElementById(serviceId);
       if (element) {
-        // 2. Calcular posición restando el header fijo (aprox 140px)
         const offset = 200;
         const elementPosition = element.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.scrollY - offset;
@@ -212,15 +209,13 @@ export const Navbar: React.FC = () => {
           behavior: "smooth",
         });
 
-        // 3. Actualizar URL (sin recargar)
         window.history.pushState({}, "", `/servicios?cat=${serviceId}`);
       }
-
-      // Cerrar menús
       setActiveMenu(null);
       setIsOpen(false);
     }
   };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 shadow-lg transition-all duration-300 border-b border-gray-200 bg-[#2553A8]">
       {/* Marca de agua */}
@@ -233,13 +228,22 @@ export const Navbar: React.FC = () => {
       </div>
 
       <div className="flex flex-col relative z-10">
-        {/* Barra Superior */}
-        <div className="flex items-center gap-4 px-4 py-4 md:py-6 max-w-7xl mx-auto w-full border-b border-white/10">
+        {/* BARRA SUPERIOR*/}
+        {/* En móvil  (max-h-20), en PC (md:max-h-0) */}
+        <div
+          className={`flex items-center gap-4 px-4 max-w-7xl mx-auto w-full transition-all duration-500 ${
+            isScrolled
+              ? "py-2 max-h-20 md:max-h-0 md:py-0 md:opacity-0 md:border-transparent overflow-hidden pointer-events-none"
+              : "py-4 md:py-6 max-h-[800px] opacity-100 border-b border-white/10 overflow-visible"
+          }`}
+        >
           <a href="/" className="flex items-center gap-2 shrink-0">
             <img
               src={logo.src}
               alt="Compresores del Valle"
-              className="w-20 h-20 md:w-24 md:h-24 object-contain"
+              className={`object-contain transition-all duration-500 ${
+                isScrolled ? "w-12 h-12" : "w-20 h-20 md:w-24 md:h-24"
+              }`}
             />
           </a>
 
@@ -257,6 +261,7 @@ export const Navbar: React.FC = () => {
                   search
                 </span>
               </div>
+
               <input
                 id="search-input"
                 name="search"
@@ -264,14 +269,29 @@ export const Navbar: React.FC = () => {
                 placeholder="Buscar productos, modelos, SKU..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 bg-white/80 border border-gray-300 rounded-lg leading-5 text-[#2553A8] placeholder-gray-400/50 focus:outline-none focus:ring-2 focus:ring-[#FFD600] focus:ring-opacity-50 sm:text-sm transition-all duration-300 shadow-sm opacity-95 focus:opacity-100"
+                className="block w-full pl-10 pr-10 py-3 bg-white/80 border border-gray-300 rounded-lg leading-5 text-[#2553A8] placeholder-gray-400/50 focus:outline-none focus:ring-2 focus:ring-[#FFD600] focus:ring-opacity-50 sm:text-sm transition-all duration-300 shadow-sm opacity-95 focus:opacity-100"
               />
+
+              {/* LA "X" PARA BORRAR */}
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setShowSuggestions(false);
+                  }}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-lg">
+                    close
+                  </span>
+                </button>
+              )}
             </form>
 
-            {/* Sugerencias (Intacto) */}
+            {/* Sugerencias */}
             {showSuggestions && searchQuery.length > 1 && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-100 text-slate-800 animate-in fade-in slide-in-from-top-2 duration-200">
-                {/* ... contenido sugerencias ... */}
                 <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
                     Resultados Sugeridos
@@ -303,7 +323,11 @@ export const Navbar: React.FC = () => {
                         <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shrink-0 border border-slate-100 overflow-hidden shadow-sm">
                           {item.type === "product" ? (
                             <img
-                              src={item.data.image}
+                              src={
+                                typeof item.data.image === "string"
+                                  ? item.data.image
+                                  : item.data.image?.src
+                              }
                               alt=""
                               className="w-8 h-8 object-contain"
                             />
@@ -343,6 +367,21 @@ export const Navbar: React.FC = () => {
                     </div>
                   )}
                 </div>
+                {/* --- BOTÓN VER TODOS LOS RESULTADOS --- */}
+                {totalMatches > 0 && (
+                  <div className="border-t border-slate-100 p-2 bg-slate-50 rounded-b-xl">
+                    <button
+                      type="button"
+                      onClick={(e) => handleSearchSubmit(e)}
+                      className="w-full bg-blue-100/50 hover:bg-[#2553A8] text-[#2553A8] hover:text-white transition-colors py-3 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2"
+                    >
+                      Ver todos los productos ({totalMatches})
+                      <span className="material-symbols-outlined text-sm">
+                        arrow_forward
+                      </span>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -358,7 +397,9 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* NAVEGACIÓN DESKTOP CON ESTADOS ACTIVOS */}
-        <div className="hidden md:flex justify-center border-t border-white/10 bg-black/10 backdrop-blur-sm">
+        <div
+          className={`hidden md:flex justify-center bg-black/10 backdrop-blur-sm transition-all duration-500 ${isScrolled ? "shadow-md border-transparent" : "border-t border-white/10"}`}
+        >
           <nav className="flex items-center gap-8 h-12">
             {/* Inicio */}
             <a
@@ -490,7 +531,6 @@ export const Navbar: React.FC = () => {
         <div
           className={`md:hidden bg-white overflow-hidden transition-all duration-300 ${isOpen ? "max-h-[90vh]" : "max-h-0"}`}
         >
-          {/* ... todo el código del menú móvil que ya tenías ... */}
           <nav className="flex flex-col p-4 gap-2">
             <a
               href="/"
@@ -533,7 +573,6 @@ export const Navbar: React.FC = () => {
                 </div>
               )}
             </div>
-            {/* ... servicios mobile ... */}
             <div>
               <button
                 onClick={() =>
