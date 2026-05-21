@@ -1,3 +1,4 @@
+import { CircleCheck, ChevronDown, ClipboardClock } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 
 export const Contact: React.FC = () => {
@@ -33,11 +34,10 @@ export const Contact: React.FC = () => {
     "Montaje de lavaderos",
   ];
 
-  // --- LÓGICA DE VALIDACIÓN (Para mostrar el chulito) ---
+  // --- LÓGICA DE VALIDACIÓN ---
   const validateField = (name: string, value: string) => {
     switch (name) {
       case "email":
-        // Regex estricto: requiere texto @ texto . extension
         return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
       case "phone":
         // Solo números, entre 10 y 15 dígitos
@@ -50,14 +50,12 @@ export const Contact: React.FC = () => {
     }
   };
 
-  // Handler unificado para validar mientras escribes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Validar para mostrar icono verde
     if (name === "name" || name === "email" || name === "phone") {
       setValidFields((prev) => ({
         ...prev,
@@ -151,7 +149,7 @@ export const Contact: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 pt-16 pb-20 space-y-24">
       <header className="text-center space-y-6">
-        <span className="text-(--brand-yellow) font-black uppercase tracking-[0.3em] text-sm">
+        <span className="bg-yellow-100 text-[#013189] px-3 py-1 rounded-full font-black uppercase tracking-[0.3em] text-sm">
           ¿Cómo podemos ayudarte?
         </span>
 
@@ -173,7 +171,7 @@ export const Contact: React.FC = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="name_input"
-                  className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2"
+                  className="text-[10px] font-black uppercase text-slate-500 tracking-widest pl-2"
                 >
                   Nombre <span className="text-red-500">*</span>
                 </label>
@@ -191,9 +189,7 @@ export const Contact: React.FC = () => {
                   />
                   {validFields.name && (
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-green-500 animate-in zoom-in spin-in-90 duration-300 pointer-events-none">
-                      <span className="material-symbols-outlined font-black text-xl">
-                        check_circle
-                      </span>
+                      <CircleCheck className="size-5" />
                     </span>
                   )}
                 </div>
@@ -202,7 +198,7 @@ export const Contact: React.FC = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="company_input"
-                  className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2"
+                  className="text-[10px] font-black uppercase text-slate-500 tracking-widest pl-2"
                 >
                   Empresa
                 </label>
@@ -222,7 +218,7 @@ export const Contact: React.FC = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="email_input"
-                  className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2"
+                  className="text-[10px] font-black uppercase text-slate-500 tracking-widest pl-2"
                 >
                   Email <span className="text-red-500">*</span>
                 </label>
@@ -241,9 +237,7 @@ export const Contact: React.FC = () => {
                   />
                   {validFields.email && (
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-green-500 animate-in zoom-in spin-in-90 duration-300 pointer-events-none">
-                      <span className="material-symbols-outlined font-black text-xl">
-                        check_circle
-                      </span>
+                      <CircleCheck className="size-5"/>
                     </span>
                   )}
                 </div>
@@ -251,7 +245,7 @@ export const Contact: React.FC = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="phone_input"
-                  className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2"
+                  className="text-[10px] font-black uppercase text-slate-500 tracking-widest pl-2"
                 >
                   Teléfono <span className="text-red-500">*</span>
                 </label>
@@ -271,9 +265,7 @@ export const Contact: React.FC = () => {
                   />
                   {validFields.phone && (
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-green-500 animate-in zoom-in spin-in-90 duration-300 pointer-events-none">
-                      <span className="material-symbols-outlined font-black text-xl">
-                        check_circle
-                      </span>
+                      <CircleCheck className="size-5"/>
                     </span>
                   )}
                 </div>
@@ -283,7 +275,7 @@ export const Contact: React.FC = () => {
             <div className="space-y-2">
               <label
                 htmlFor="subject_input"
-                className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2"
+                className="text-[10px] font-black uppercase text-slate-500 tracking-widest pl-2"
               >
                 Requerimiento
               </label>
@@ -296,11 +288,7 @@ export const Contact: React.FC = () => {
                   className={`${inputStyle} text-left flex items-center justify-between`}
                 >
                   <span>{formData.subject}</span>
-                  <span
-                    className={`material-symbols-outlined font-black transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}
-                  >
-                    keyboard_arrow_down
-                  </span>
+                  <ChevronDown className={`transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`} />
                 </button>
 
                 {isDropdownOpen && (
@@ -325,7 +313,7 @@ export const Contact: React.FC = () => {
             <div className="space-y-2">
               <label
                 htmlFor="message_input"
-                className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2"
+                className="text-[10px] font-black uppercase text-slate-500 tracking-widest pl-2"
               >
                 Detalle
               </label>
@@ -448,9 +436,7 @@ export const Contact: React.FC = () => {
           <div className="space-y-8">
             <div className="flex items-start gap-6 bg-slate-900 p-8 rounded-[3rem] text-white">
               <div className="size-16 rounded-2xl bg-(--brand-yellow) flex items-center justify-center text-(--brand-blue) shrink-0">
-                <span className="material-symbols-outlined text-4xl">
-                  schedule
-                </span>
+                <ClipboardClock className="size-9"/>
               </div>
               <div className="grow">
                 <h3 className="font-black text-(--brand-yellow) uppercase tracking-widest text-lg">

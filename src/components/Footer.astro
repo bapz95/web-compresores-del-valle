@@ -1,20 +1,34 @@
 ---
-import {Image} from 'astro:assets';
-import logo from "../assets/branding/logoCompresores1.png";
+import { Image } from "astro:assets";
+import logo from "../assets/branding/logoCompresores1.webp";
+const currentYear = new Date().getFullYear();
+import mastercard from "../assets/branding/mastercard.png";
+import visa from "../assets/branding/visa.png";
+import nequi from "../assets/branding/nequi.png";
+import { 
+  FaWhatsapp,
+  FaFacebookF,
+  FaInstagram,
+  FaTiktok 
+} from "react-icons/fa";
+import {
+  Mail,
+  Phone,
+  MapPin
+} from "lucide-react";
 ---
 
-<footer class="bg-[#035aa6] text-white pt-16 pb-8 px-6 mt-20">
+<footer
+  class="bg-[#035aa6] text-white pt-16 pb-8 px-6 mt-20"
+  itemscope
+  itemtype="https://schema.org/LocalBusiness"
+>
   <div
     class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
   >
     <div class="space-y-6">
       <div class="flex flex-col items-center leading-none">
-        <Image
-          src={logo}
-          alt="Logo Footer"
-          class="h-28 w-auto"
-          
-        />
+        <Image src={logo} alt="Logo Footer" class="h-28 w-auto" />
       </div>
       <p class="text-white/80 text-sm leading-relaxed">
         Expertos en soluciones de aire comprimido industrial. Comprometidos con
@@ -23,87 +37,121 @@ import logo from "../assets/branding/logoCompresores1.png";
     </div>
 
     <div>
-      <h4 class="text-lg font-bold mb-6 border-l-4 border-(--brand-yellow) pl-3">
+      <h2
+        class="text-lg font-bold mb-6 border-l-4 border-(--brand-yellow) pl-3"
+      >
         Navegación
-      </h4>
+      </h2>
       <ul class="space-y-4 text-sm text-white/80">
         <li>
-          <a href="/" class="hover:text-(--brand-yellow) transition-colors">Inicio</a>
-        </li>
-        <li>
-          <a href="/productos" class="hover:text-(--brand-yellow) transition-colors"
-            >Productos</a
+          <a href="/" class="hover:text-(--brand-yellow) transition-colors"
+            >Inicio</a
           >
         </li>
         <li>
-          <a href="/servicios" class="hover:text-(--brand-yellow) transition-colors"
-            >Servicios</a
+          <a
+            href="/productos"
+            class="hover:text-(--brand-yellow) transition-colors"
+            >Compresores y Repuestos</a
           >
         </li>
         <li>
-          <a href="/nosotros" class="hover:text-(--brand-yellow) transition-colors"
-            >Nosotros</a
+          <a
+            href="/servicios"
+            class="hover:text-(--brand-yellow) transition-colors"
+            >Mantenimiento y Servicio Técnico</a
+          >
+        </li>
+        <li>
+          <a
+            href="/nosotros"
+            class="hover:text-(--brand-yellow) transition-colors">Nosotros</a
           >
         </li>
       </ul>
     </div>
 
     <div>
-      <h4 class="text-lg font-bold mb-6 border-l-4 border-(--brand-yellow) pl-3">
+      <h2
+        class="text-lg font-bold mb-6 border-l-4 border-(--brand-yellow) pl-3"
+      >
         Contacto
-      </h4>
+      </h2>
       <ul class="space-y-4 text-sm text-white/80">
         <li class="flex items-start gap-3">
-          <span class="material-symbols-outlined text-(--brand-yellow) text-xl"
-            >phone_iphone</span
-          >
+          <Phone size={20} className="text-(--brand-yellow) transition-colors" />
           <a
-            href="https://wa.me/573127536787"
+            href="tel:+573127536787"
             target="_blank"
             rel="noopener noreferrer"
             class="hover:text-(--brand-yellow) transition-colors"
+            itemprop="telephone"
           >
             312 753 6787
           </a>
         </li>
         <li class="flex items-start gap-3">
-          <span class="material-symbols-outlined text-(--brand-yellow) text-xl"
-            >phone_iphone</span
-          >
+          <Phone size={20} className="text-(--brand-yellow) transition-colors" />
           <a
-            href="https://wa.me/573174675905"
+            href="tel:+573174675905"
             target="_blank"
             rel="noopener noreferrer"
             class="hover:text-(--brand-yellow) transition-colors"
+            itemprop="telephone"
           >
             317 467 5905
           </a>
         </li>
-        <li class="flex items-start gap-3">
-          <span class="material-symbols-outlined text-(--brand-yellow) text-xl"
-            >location_on</span
-          >
-          <span>Cll 34 # 4b-30 Barrio Porvenir, Cali</span>
+        <li
+          class="flex items-start gap-3"
+          itemprop="address"
+          itemscope
+          itemtype="https://schema.org/PostalAddress"
+        >
+          <MapPin size={20} className="text-(--brand-yellow) shrink-0" />
+          <div class="flex flex-col md:flex-row md:gap-4 leading-tight">
+            <span itemprop="streetAddress">Cll 34 # 4b-30 Barrio Porvenir</span>
+            <span class="hidden md:block">|</span>
+            {/* Separador visual solo en PC */}
+            <span>
+              <span itemprop="addressLocality">Cali</span>,
+              <span itemprop="addressRegion">Valle del Cauca</span>
+            </span>
+          </div>
         </li>
         <li class="flex items-start gap-3">
-          <span class="material-symbols-outlined text-(--brand-yellow) text-xl"
-            >mail</span
+          <Mail size={20} className="text-(--brand-yellow) shrink-0" />
+          <a
+            href="mailto:ventascompresoresdelvalle@hotmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-(--brand-yellow) transition-colors"
+            itemprop="email"
           >
-          <span>ventascompresoresdelvalle@hotmail.com</span>
+            ventascompresoresdelvalle@hotmail.com
+          </a>
         </li>
         <li class="flex items-start gap-3">
-          <span class="material-symbols-outlined text-(--brand-yellow) text-xl"
-            >mail</span
+          <Mail size={20} className="text-(--brand-yellow)" />
+          <a
+            href="mailto:compresoresdelvallesas@hotmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-(--brand-yellow) transition-colors"
+            itemprop="email"
           >
-          <span>compresoresdelvallesas@hotmail.com</span>
+            compresoresdelvallesas@hotmail.com
+          </a>
         </li>
       </ul>
     </div>
 
     <div>
-      <h4 class="text-lg font-bold mb-6 border-l-4 border-(--brand-yellow) pl-3">
+      <h2
+        class="text-lg font-bold mb-6 border-l-4 border-(--brand-yellow) pl-3"
+      >
         Síguenos
-      </h4>
+      </h2>
       <div class="flex flex-wrap gap-4">
         {/* WhatsApp */}
         <a
@@ -113,9 +161,9 @@ import logo from "../assets/branding/logoCompresores1.png";
           aria-label="WhatsApp"
           class="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 transition-all duration-300 group"
         >
-          <i
-            class="fa-brands fa-whatsapp text-xl text-white group-hover:text-(--wa-green) transition-all duration-300 group-hover:scale-110"
-          ></i>
+          <FaWhatsapp
+            className="size-5 text-white group-hover:text-(--wa-green) transition-all duration-300 group-hover:scale-110"
+          >
         </a>
 
         {/* Facebook */}
@@ -126,9 +174,9 @@ import logo from "../assets/branding/logoCompresores1.png";
           aria-label="Facebook"
           class="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 transition-all duration-300 group"
         >
-          <i
-            class="fa-brands fa-facebook-f text-lg text-white group-hover:text-[#1877F2] transition-all duration-300 group-hover:scale-110"
-          ></i>
+          <FaFacebookF
+            className="size-5 text-white group-hover:text-[#1877F2] transition-all duration-300 group-hover:scale-110"
+          />
         </a>
 
         {/* Instagram */}
@@ -139,9 +187,9 @@ import logo from "../assets/branding/logoCompresores1.png";
           aria-label="Instagram"
           class="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 transition-all duration-300 group"
         >
-          <i
-            class="fa-brands fa-instagram text-lg text-white group-hover:text-[#E4405F] transition-all duration-300 group-hover:scale-110"
-          ></i>
+          <FaInstagram
+            className="size-5 text-white group-hover:text-[#E4405F] transition-all duration-300 group-hover:scale-110"
+          />
         </a>
 
         {/* TikTok */}
@@ -152,9 +200,9 @@ import logo from "../assets/branding/logoCompresores1.png";
           aria-label="TikTok"
           class="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:-translate-y-1 hover:shadow-xl hover:shadow-white/10 transition-all duration-300 group"
         >
-          <i
-            class="fa-brands fa-tiktok text-lg text-white group-hover:text-[#000000] transition-all duration-300 group-hover:scale-110"
-          ></i>
+          <FaTiktok
+            className="size-5 text-white group-hover:text-[#000000] transition-all duration-300 group-hover:scale-110"
+          />
         </a>
       </div>
     </div>
@@ -163,19 +211,29 @@ import logo from "../assets/branding/logoCompresores1.png";
   <div
     class="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/10 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4"
   >
-    <p class="text-xs text-white/50">
-      © 2025 Compresores del Valle S.A.S. Todos los derechos reservados.
+    <p class="text-xs text-white/80">
+      © {currentYear}
+      <span itemprop="name">Compresores del Valle S.A.S.</span> Todos los derechos
+      reservados.
     </p>
-    <div class="flex items-center gap-6">
-      <img
+    <div class="flex items-center justify-center gap-6">
+      <Image
         alt="Mastercard"
-        class="h-6 opacity-50 grayscale hover:grayscale-0 transition-all"
-        src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
+        class="h-10 w-auto object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-200"
+        src={mastercard}
+        loading="lazy"
       />
-      <img
+      <Image
         alt="Visa"
-        class="h-4 opacity-50 grayscale hover:grayscale-0 transition-all"
-        src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
+        class="h-10 w-auto object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-200"
+        src={visa}
+        loading="lazy"
+      />
+      <Image
+        alt="Nequi"
+        class="h-6 w-auto object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-200"
+        src={nequi}
+        loading="lazy"
       />
     </div>
   </div>

@@ -1,44 +1,47 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Products } from '../components/Products';
-import { PRODUCTS } from '../data/constants';
+import Layout from "../layouts/Layout.astro";
+import { Products } from "../components/Products";
+import { PRODUCTS } from "../data/products/products";
 
 // --- SEO: Schema Markup para Catálogo ---
 const catalogSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  "name": "Catálogo de Compresores y Equipos Industriales",
-  "description": "Lista completa de compresores de tornillo, pistón, motores y herramientas neumáticas disponibles en Compresores del Valle.",
-  "numberOfItems": PRODUCTS.length,
-  "itemListElement": PRODUCTS.map((product, index) => ({
+  name: "Catálogo de Compresores y Equipos Industriales",
+  description:
+    "Lista completa de compresores de tornillo, pistón, motores y herramientas neumáticas disponibles en Compresores del Valle.",
+  numberOfItems: PRODUCTS.length,
+  itemListElement: PRODUCTS.map((product, index) => ({
     "@type": "ListItem",
-    "position": index + 1,
-    "item": {
+    position: index + 1,
+    item: {
       "@type": "Product",
-      "name": product.name,
-      "description": product.description,
-      "image": typeof product.image === 'string' ? product.image : new URL(product.image.src, Astro.site),
-      "url": new URL(`/producto/${product.id}`, Astro.site),
-      "offers": {
+      name: product.name,
+      description: product.description,
+      image:
+        typeof product.image === "string"
+          ? product.image
+          : new URL(product.image.src, Astro.site),
+      url: new URL(`/producto/${product.id}`, Astro.site),
+      offers: {
         "@type": "Offer",
-        "priceCurrency": "COP",
-        "price": product.promoPrice || product.price,
-        "availability": "https://schema.org/InStock"
-      }
-    }
-  }))
+        priceCurrency: "COP",
+        price: product.promoPrice || product.price,
+        availability: "https://schema.org/InStock",
+      },
+    },
+  })),
 };
 ---
 
-
-<Layout title="Compresores Industriales, Equipos Neumáticos y Repuestos | Compresores del Valle"
-  description="Catálogo de compresores industriales, equipos neumáticos y repuestos. Venta especializada con soporte técnico y envíos a todo Colombia desde Cali.">
-  
+<Layout
+  title="Compresores Industriales, Equipos Neumáticos y Repuestos | Compresores del Valle"
+  description="Catálogo de compresores industriales, equipos neumáticos y repuestos. Venta especializada con soporte técnico y envíos a todo Colombia desde Cali."
+>
   <!-- SCHEMA INYECTADO -->
   <script type="application/ld+json" set:html={JSON.stringify(catalogSchema)} />
   <!-- 
     client:load es OBLIGATORIO para que el filtrado y la paginación funcionen 
   -->
   <Products client:load />
-
 </Layout>

@@ -16,6 +16,7 @@ export enum SubCategory {
   TORNILLO = "Compresores de Tornillo",
   PISTON = "Compresores de piston",
   AIRESECO = "Compresores de aire seco",
+  DIESEL_GASOLINA = "Compresores Diesel/Gasolina",
   // Motores
   ELECTRICOS = "Motores electricos",
   GASOLINA = "Gasolina",
@@ -50,7 +51,7 @@ export interface Product {
   subCategory?: SubCategory;
   brand: string;
   description: string;
-  price: number;
+  price?: number;
   promoPrice?: number; // Precio promocional opcional
   promoLabel?: string; // Etiqueta para promociones (ej: "20% OFF", "Oferta Especial")
   image: ImageSource; // Imagen principal para listados
@@ -66,7 +67,7 @@ export interface ServiceItem {
   title: string;
   category: ServiceCategory;
   description: string;
-  icon: string;
+  icon: React.ElementType; 
   imageUrl: ImageSource;
   features: string[];
 }
@@ -109,7 +110,7 @@ export interface Clientes {
 export interface Feature {
   title: string;
   description: string;
-  icon: string;
+  icon: React.ElementType;
 }
 
 // Interfaz para los botones (Call To Action)
@@ -130,7 +131,7 @@ export interface HeroSlide {
 
 export interface Sector {
   name: string;
-  icon: string;
+  icon: React.ElementType;
   desc: string;
 }
 

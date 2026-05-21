@@ -1,0 +1,43 @@
+// "Diccionario" para las sugerencias cuando se escribe mal en los buscadores (NAVBAR y PRODUCTS)
+export const search_keywords = [
+  // Compresores
+  "compresores",
+  "compresor",
+  "tornillo",
+  "pistón",
+  "piston",
+  "aire",
+  "seco",
+  // Herramientas y Accesorios
+  "pistolas",
+  "pistola",
+  "pintura",
+  "boquilla",
+  "aerógrafo",
+  // Componentes
+  "cabezotes",
+  "cabezote",
+  "motores",
+  "motor",
+  "tanques",
+  "tanque",
+  "espumadoras",
+  "espumadora",
+  "automático",
+  "filtros",
+  "filtro",
+  "aceites",
+  "aceite",
+  "mangueras",
+  "manguera",
+  // Categorías Generales
+  "hidráulica",
+  "hidraulica",
+  "neumática",
+  "neumatica",
+  "lavaderos",
+  "devilbiss",
+  "sagola",
+  "schulz",
+  "wufu",
+];

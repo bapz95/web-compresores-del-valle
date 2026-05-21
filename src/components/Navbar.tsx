@@ -1,9 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
-import { PRODUCTS, SERVICES, search_keywords } from "../data/constants";
-import { type Product, Category, SubCategory } from "../data/types";
-import mapBG from "../assets/branding/map.png";
-import logo from "../assets/branding/logoCompresores1.png";
+import {
+  SITE_MENU,
+} from "../data/shared/navegacion";
+import { search_keywords } from "../data/search/search";
+import { Category, SubCategory } from "../data/types";
+import type { LightProduct } from "../data/products/types";
+import mapBG from "../assets/branding/map.webp";
+import logo from "../assets/branding/logoCompresores1.webp";
 import { removeAccents, getLevenshteinDistance } from "../utils/searchUtils";
+import {
+  ChevronDown,
+  ArrowRight,
+  SearchX,
+  Folder,
+  FolderTree,
+  Search,
+  X,
+  Menu,
+} from "lucide-react";
+
+interface NavbarProps {
+  searchData: LightProduct[];
+}
 
 type SearchResult = {
   type: "product" | "category" | "subcategory";
@@ -11,7 +29,42 @@ type SearchResult = {
   data: any;
 };
 
-export const Navbar: React.FC = () => {
+// --- COMPONENTE PARA RESALTAR TEXTO ---
+const HighlightText = ({
+  text,
+  highlight,
+}: {
+  text: string;
+  highlight: string;
+}) => {
+  if (!highlight.trim()) return <>{text}</>;
+  const words = removeAccents(highlight)
+    .split(" ")
+    .filter((w) => w.length > 0);
+
+  // Expresión regular para separar el texto por las palabras buscadas
+  const regex = new RegExp(`(${words.join("|")})`, "gi");
+  const parts = text.split(regex);
+
+  return (
+    <>
+      {parts.map((part, i) => {
+        const isMatch = words.includes(removeAccents(part));
+        return isMatch ? (
+          <strong key={i} className="text-[#2553A8] font-black">
+            {part}
+          </strong>
+        ) : (
+          <span key={i} className="text-slate-600">
+            {part}
+          </span>
+        );
+      })}
+    </>
+  );
+};
+
+export const Navbar: React.FC<NavbarProps> = ({ searchData }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
@@ -39,7 +92,7 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- EFECTO PARA DETECTAR LA RUTA ACTIVA EN ASTRO ---
+  // --- EFECTO PARA DETECTAR LA RUTA ACTIVA ---
   useEffect(() => {
     const updatePath = () => setCurrentPath(window.location.pathname);
     updatePath();
@@ -67,11 +120,10 @@ export const Navbar: React.FC = () => {
   }, []);
 
   // --- EFECTO DEL BUSCADOR  ---
-  // --- EFECTO DEL BUSCADOR (OPTIMIZADO) ---
   useEffect(() => {
     if (searchQuery.length > 1) {
       const query = removeAccents(searchQuery);
-      const results: SearchResult[] =[];
+      const results: SearchResult[] = [];
 
       // 1. Buscar Categorías
       Object.values(Category).forEach((cat) => {
@@ -80,32 +132,29 @@ export const Navbar: React.FC = () => {
         }
       });
 
-      // 2. Buscar Subcategorías (Con relación padre-hijo blindada)
+      // 2. Buscar Subcategorías
       Object.values(SubCategory).forEach((sub) => {
         if (removeAccents(sub).includes(query)) {
-          // Definimos manualmente el papá para no fallar nunca
-          let parentCat = "";
-          if ([SubCategory.TORNILLO, SubCategory.PISTON, SubCategory.AIRESECO].includes(sub)) {
-            parentCat = Category.COMPRESORES;
-          } else if ([SubCategory.ELECTRICOS, SubCategory.GASOLINA, SubCategory.DIESEL].includes(sub)) {
-            parentCat = Category.MOTORES;
-          }
-          
-          results.push({ 
-            type: "subcategory", 
-            label: sub, 
-            data: { sub: sub, cat: parentCat } 
+          // Buscamos el primer producto que pertenezca a esta subcategoría para saber su categoría padre
+          const referenceProduct = searchData.find((p) => p.subCategory === sub);
+
+          // Si encontramos un producto, usamos su categoría. Si no, queda vacío.
+          const parentCat = referenceProduct ? referenceProduct.category : "";
+
+          results.push({
+            type: "subcategory",
+            label: sub,
+            data: { sub: sub, cat: parentCat },
           });
         }
       });
 
       // 3. Buscar Productos
-      const allProductMatches = PRODUCTS.filter(
-        (p) =>
-          removeAccents(p.name).includes(query) ||
-          removeAccents(p.brand).includes(query)
-
-      );
+      const queryWords = query.split(" ").filter((w) => w.length > 0);
+      const allProductMatches = searchData.filter((p) => {
+        const searchableText = removeAccents(`${p.name} ${p.brand}`);
+        return queryWords.every((word) => searchableText.includes(word));
+      });
 
       setTotalMatches(allProductMatches.length);
 
@@ -136,14 +185,14 @@ export const Navbar: React.FC = () => {
       setCorrection(null);
       setShowSuggestions(false);
     }
-  },[searchQuery]);
+  }, [searchQuery]);
 
   // --- MANEJADOR DE CLIC EN RESULTADOS ---
   const handleSearchSubmit = (e: React.FormEvent, item?: SearchResult) => {
     e.preventDefault();
     if (item) {
       if (item.type === "product") {
-        const p = item.data as Product;
+        const p = item.data as LightProduct;
         window.location.href = `/productos?cat=${encodeURIComponent(p.category)}${p.subCategory ? `&sub=${encodeURIComponent(p.subCategory)}` : ""}&q=${encodeURIComponent(p.name)}`;
       }
       if (item.type === "category") {
@@ -159,29 +208,6 @@ export const Navbar: React.FC = () => {
     setShowSuggestions(false);
     setIsOpen(false);
     setActiveMenu(null);
-  };
-
-  const menuStructure = {
-    productos: [
-      {
-        name: Category.COMPRESORES,
-        subs: [SubCategory.TORNILLO, SubCategory.PISTON, SubCategory.AIRESECO],
-      },
-      { name: Category.CABEZOTES },
-      {
-        name: Category.MOTORES,
-        subs: [
-          SubCategory.ELECTRICOS,
-          SubCategory.GASOLINA,
-          SubCategory.DIESEL,
-        ],
-      },
-      { name: Category.TANQUES_ESPUMADORAS },
-      { name: Category.REPUESTOS_ACCESORIOS },
-      { name: Category.PISTOLAS_AEROGRAFOS },
-      { name: Category.HERRAMIENTA_HIDRAULICA_NEUMATICA },
-    ],
-    servicios: SERVICES.map((s) => ({ id: s.id, name: s.title })),
   };
 
   const navigateToCategory = (cat: string, sub?: string) => {
@@ -219,17 +245,13 @@ export const Navbar: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 shadow-lg transition-all duration-300 border-b border-gray-200 bg-[#2553A8]">
       {/* Marca de agua */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden flex items-center justify-center opacity-70">
-        <img
-          src={mapBG.src}
-          alt="Mapa de fondo"
-          className="w-[150%] md:w-[75%] h-full"
-        />
-      </div>
+      <div
+        className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-70 bg-no-repeat bg-center [background-size:100%_100%] md:[background-size:75%_100%]"
+        style={{ backgroundImage: `url(${mapBG.src})` }}
+      />
 
       <div className="flex flex-col relative z-10">
         {/* BARRA SUPERIOR*/}
-        {/* En móvil  (max-h-20), en PC (md:max-h-0) */}
         <div
           className={`flex items-center gap-4 px-4 max-w-7xl mx-auto w-full transition-all duration-500 ${
             isScrolled
@@ -257,16 +279,15 @@ export const Navbar: React.FC = () => {
               className="relative z-20"
             >
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="material-symbols-outlined text-gray-400">
-                  search
-                </span>
+                <Search className="text-gray-400" />
               </div>
 
               <input
                 id="search-input"
+                aria-label="Buscar productos y repuestos"
                 name="search"
                 type="text"
-                placeholder="Buscar productos, modelos, SKU..."
+                placeholder="Buscar productos ..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="block w-full pl-10 pr-10 py-3 bg-white/80 border border-gray-300 rounded-lg leading-5 text-[#2553A8] placeholder-gray-400/50 focus:outline-none focus:ring-2 focus:ring-[#FFD600] focus:ring-opacity-50 sm:text-sm transition-all duration-300 shadow-sm opacity-95 focus:opacity-100"
@@ -282,9 +303,7 @@ export const Navbar: React.FC = () => {
                   }}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-lg">
-                    close
-                  </span>
+                  <X className="size-5" />
                 </button>
               )}
             </form>
@@ -331,12 +350,10 @@ export const Navbar: React.FC = () => {
                               alt=""
                               className="w-8 h-8 object-contain"
                             />
+                          ) : item.type === "category" ? (
+                            <Folder className="size-5 text-slate-400" />
                           ) : (
-                            <span className="material-symbols-outlined text-slate-400 text-lg">
-                              {item.type === "category"
-                                ? "category"
-                                : "settings_input_component"}
-                            </span>
+                            <FolderTree className="size-5 text-slate-400" />
                           )}
                         </div>
                         <div className="flex flex-col overflow-hidden">
@@ -350,17 +367,18 @@ export const Navbar: React.FC = () => {
                                 ? "Subcategoría"
                                 : "Producto"}
                           </span>
-                          <span className="text-sm font-bold text-slate-800 truncate group-hover:text-[#2553A8] transition-colors">
-                            {item.label}
+                          <span className="text-sm truncate group-hover:text-[#2553A8] transition-colors">
+                            <HighlightText
+                              text={item.label}
+                              highlight={searchQuery}
+                            />
                           </span>
                         </div>
                       </button>
                     ))
                   ) : (
                     <div className="p-8 text-center flex flex-col items-center gap-2">
-                      <span className="material-symbols-outlined text-slate-300 text-3xl">
-                        search_off
-                      </span>
+                      <SearchX className="size-8 text-slate-300" />
                       <span className="text-xs text-slate-500 font-bold uppercase">
                         No encontramos coincidencias
                       </span>
@@ -376,9 +394,7 @@ export const Navbar: React.FC = () => {
                       className="w-full bg-blue-100/50 hover:bg-[#2553A8] text-[#2553A8] hover:text-white transition-colors py-3 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2"
                     >
                       Ver todos los productos ({totalMatches})
-                      <span className="material-symbols-outlined text-sm">
-                        arrow_forward
-                      </span>
+                      <ArrowRight className="size-4" />
                     </button>
                   </div>
                 )}
@@ -387,12 +403,11 @@ export const Navbar: React.FC = () => {
           </div>
 
           <button
+            aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
             onClick={() => setIsOpen(!isOpen)}
             className="p-2 text-white hover:bg-white/10 rounded-full transition-colors md:hidden"
           >
-            <span className="material-symbols-outlined text-3xl">
-              {isOpen ? "close" : "menu"}
-            </span>
+            {isOpen ? <X className="size-8" /> : <Menu className="size-8" />}
           </button>
         </div>
 
@@ -422,25 +437,20 @@ export const Navbar: React.FC = () => {
                        ${isActive("/productos") || activeMenu === "productos" ? "text-[#FFD600]" : "text-white/90 hover:text-[#FFD600]"}
                        ${isActive("/productos") ? "border-b-2 border-[#FFD600]" : ""}`}
               >
-                Productos{" "}
-                <span className="material-symbols-outlined text-lg">
-                  keyboard_arrow_down
-                </span>
+                Productos <ChevronDown className="size-5" />
               </a>
 
               {activeMenu === "productos" && (
                 <div className="absolute top-full left-1/2 -translate-x-1/2 pt-0 w-200 z-50 animate-in fade-in slide-in-from-top-1 duration-200">
                   <div className="absolute -top-1.25 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 transform"></div>
                   <div className="bg-white rounded-xl shadow-2xl p-8 grid grid-cols-3 gap-x-8 gap-y-6 border-t-4 border-[#FFD600]">
-                    {menuStructure.productos.map((cat, i) => (
+                    {SITE_MENU.productos.map((cat, i) => (
                       <div key={i} className="flex flex-col">
                         <button
                           onClick={() => navigateToCategory(cat.name)}
                           className="group/btn text-left font-black text-[#2553A8] mb-2 text-xs uppercase flex items-center gap-1"
                         >
-                          <span className="material-symbols-outlined text-sm text-[#FFD600] transition-transform group-hover/btn:translate-x-1">
-                            arrow_forward
-                          </span>
+                          <ArrowRight className="size-4 text-[#FFD600] transition-transform group-hover/btn:translate-x-1 shrink-0" />
                           <span className="group-hover/btn:underline">
                             {cat.name}
                           </span>
@@ -480,25 +490,20 @@ export const Navbar: React.FC = () => {
                        ${isActive("/servicios") || activeMenu === "servicios" ? "text-[#FFD600]" : "text-white/90 hover:text-[#FFD600]"}
                        ${isActive("/servicios") ? "border-b-2 border-[#FFD600]" : ""}`}
               >
-                Servicios{" "}
-                <span className="material-symbols-outlined text-lg">
-                  keyboard_arrow_down
-                </span>
+                Servicios <ChevronDown className="size-5" />
               </a>
 
               {activeMenu === "servicios" && (
                 <div className="absolute top-full left-0 pt-0 w-72 z-50 animate-in fade-in slide-in-from-top-1 duration-200">
                   <div className="bg-white rounded-xl shadow-2xl p-6 flex flex-col gap-3 border-t-4 border-[#FFD600] mt-2">
-                    {menuStructure.servicios.map((ser, i) => (
+                    {SITE_MENU.servicios.map((ser, i) => (
                       <a
                         key={i}
                         href={`/servicios?cat=${ser.id}`}
                         onClick={(e) => handleServiceClick(e, ser.id)}
                         className="group/serv flex items-center gap-2 text-xs font-black text-[#2553A8] uppercase transition-colors"
                       >
-                        <span className="material-symbols-outlined text-sm text-[#FFD600] transition-transform group-hover/serv:translate-x-1">
-                          arrow_forward
-                        </span>
+                        <ArrowRight className="size-4 text-[#FFD600] transition-transform group-hover/serv:translate-x-1 shrink-0" />
                         <span className="group-hover/serv:underline">
                           {ser.name}
                         </span>
@@ -546,11 +551,9 @@ export const Navbar: React.FC = () => {
                 className="w-full flex justify-between items-center p-3 text-gray-700 font-bold uppercase text-sm rounded-lg hover:bg-gray-50"
               >
                 Productos{" "}
-                <span
-                  className={`material-symbols-outlined transition-transform ${expandedMobile === "prod" ? "rotate-180" : ""}`}
-                >
-                  expand_more
-                </span>
+                <ChevronDown
+                  className={`size-5 transition-transform ${expandedMobile === "prod" ? "rotate-180" : ""}`}
+                />
               </button>
               {expandedMobile === "prod" && (
                 <div className="pl-4 pb-2 space-y-2 bg-gray-50 rounded-b-lg">
@@ -560,7 +563,7 @@ export const Navbar: React.FC = () => {
                   >
                     Ver todo
                   </a>
-                  {menuStructure.productos.map((cat, i) => (
+                  {SITE_MENU.productos.map((cat, i) => (
                     <div key={i}>
                       <button
                         onClick={() => navigateToCategory(cat.name)}
@@ -581,15 +584,13 @@ export const Navbar: React.FC = () => {
                 className="w-full flex justify-between items-center p-3 text-gray-700 font-bold uppercase text-sm rounded-lg hover:bg-gray-50"
               >
                 Servicios{" "}
-                <span
-                  className={`material-symbols-outlined transition-transform ${expandedMobile === "serv" ? "rotate-180" : ""}`}
-                >
-                  expand_more
-                </span>
+                <ChevronDown
+                  className={`size-5 transition-transform ${expandedMobile === "serv" ? "rotate-180" : ""}`}
+                />
               </button>
               {expandedMobile === "serv" && (
                 <div className="pl-4 pb-2 space-y-2 bg-gray-50 rounded-b-lg">
-                  {menuStructure.servicios.map((ser, i) => (
+                  {SITE_MENU.servicios.map((ser, i) => (
                     <a
                       key={i}
                       href={`/servicios?cat=${ser.id}`}

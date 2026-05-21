@@ -1,7 +1,9 @@
 import React from "react";
-import { PRODUCTS } from "../data/constants";
+import { PRODUCTS } from "../data/products/products";
+import { PRODUCT_STRUCTURE } from "../data/shared/navegacion";
 import { Category, SubCategory } from "../data/types";
 import { formatCurrency } from "../utils/formatters";
+import { Check, ChevronDown, Funnel, Search, X } from "lucide-react";
 
 interface ProductSidebarProps {
   selectedCategory: string;
@@ -53,21 +55,19 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
   return (
     <aside className="w-full lg:w-64 shrink-0 space-y-4 select-none">
       <div className="flex items-center gap-2 px-1">
-        <span className="material-symbols-outlined text-[#2553A8]">tune</span>
+        <Funnel className="size-4 text-[#2553A8] uppercase tracking-widest" />
         <span className="font-black text-[#2553A8] uppercase tracking-widest text-sm">
           Filtros
         </span>
       </div>
-      {/* --- BUSCADOR INTERNO RESTAURADO --- */}
+      {/* --- BUSCADOR INTERNO --- */}
       <div className="relative shadow-sm group mb-2">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <span className="material-symbols-outlined text-slate-400 text-lg group-focus-within:text-[#2553A8] transition-colors">
-            search
-          </span>
+          <Search className="size-4 text-slate-500 group-focus-within:text-[#2553A8] transition-colors" />
         </div>
         <input
           type="text"
-          placeholder="Buscar modelo, marca..."
+          placeholder="Buscar producto..."
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
@@ -78,30 +78,34 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
         {searchQuery && (
           <button
             type="button"
+            aria-label="Limpiar búsqueda"
             onClick={() => {
               setSearchQuery("");
               setCurrentPage(1);
             }}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-red-500 transition-colors cursor-pointer"
           >
-            <span className="material-symbols-outlined text-lg">close</span>
+            <X className="size-4" />
           </button>
         )}
       </div>
       {/* 1. SECCIÓN CATEGORÍA */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <button
+          aria-label={
+            sectionsOpen.category
+              ? "Cerrar filtros de categoría"
+              : "Abrir filtros de categoría"
+          }
           onClick={() =>
             setSectionsOpen((p) => ({ ...p, category: !p.category }))
           }
           className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
         >
           <span className="font-bold text-slate-700 text-sm">Categoría</span>
-          <span
-            className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${sectionsOpen.category ? "rotate-180" : ""}`}
-          >
-            expand_more
-          </span>
+          <ChevronDown
+            className={`transition-transform text-slate-500 size-5 ${sectionsOpen.category ? "rotate-180" : ""}`}
+          />
         </button>
 
         {sectionsOpen.category && (
@@ -115,9 +119,7 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
                 className={`size-5 rounded border flex items-center justify-center transition-colors ${selectedCategory === "all" && !showPromosOnly ? "bg-[#2553A8] border-[#2553A8]" : "bg-white border-slate-300 group-hover:border-[#2553A8]"}`}
               >
                 {selectedCategory === "all" && !showPromosOnly && (
-                  <span className="material-symbols-outlined text-white text-sm font-black">
-                    check
-                  </span>
+                  <Check className="size-4 text-white" />
                 )}
               </div>
               <span
@@ -135,11 +137,7 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
               <div
                 className={`size-5 rounded border flex items-center justify-center transition-colors ${showPromosOnly ? "bg-red-500 border-red-500" : "bg-white border-slate-300 group-hover:border-red-500"}`}
               >
-                {showPromosOnly && (
-                  <span className="material-symbols-outlined text-white text-sm font-black">
-                    check
-                  </span>
-                )}
+                {showPromosOnly && <Check className="size-4 text-white" />}
               </div>
               <span
                 className={`text-xs font-medium ${showPromosOnly ? "text-red-500" : "text-slate-600"}`}
@@ -147,7 +145,7 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
                 Ofertas
               </span>
               <span
-                className={`text-[8px] font-bold ${showPromosOnly ? "text-red-300" : "text-slate-400"}`}
+                className={`text-[8px] font-bold ${showPromosOnly ? "text-red-300" : "text-slate-500"}`}
               >
                 ({getPromoCount()})
               </span>
@@ -156,62 +154,49 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
             <div className="h-px bg-slate-100 my-2"></div>
 
             {/* Categorías con Flecha Independiente */}
-            {Object.values(Category).map((cat) => {
-              const isSelected = selectedCategory === cat;
-              const isExpanded = expandedCategories[cat];
-              const hasSubs =
-                cat === Category.COMPRESORES || cat === Category.MOTORES;
-              const subs =
-                cat === Category.COMPRESORES
-                  ? [
-                      SubCategory.TORNILLO,
-                      SubCategory.PISTON,
-                      SubCategory.AIRESECO,
-                    ]
-                  : [
-                      SubCategory.ELECTRICOS,
-                      SubCategory.GASOLINA,
-                      SubCategory.DIESEL,
-                    ];
+            {PRODUCT_STRUCTURE.map((item) => {
+              const isSelected = selectedCategory === item.name;
+              const isExpanded = expandedCategories[item.name];
+              const subs = item.subs;
+              const hasSubs = subs.length > 0;
 
               return (
-                <div key={cat} className="space-y-2">
+                <div key={item.name} className="space-y-2">
                   <div className="flex items-center justify-between group">
                     <div
-                      onClick={() => onUpdateUrl(cat, "all", false)}
+                      onClick={() => onUpdateUrl(item.name, "all", false)}
                       className="flex items-center gap-3 cursor-pointer grow"
                     >
                       <div
                         className={`size-5 rounded border flex items-center justify-center transition-colors ${isSelected ? "bg-[#2553A8] border-[#2553A8]" : "bg-white border-slate-300 group-hover:border-[#2553A8]"}`}
                       >
-                        {isSelected && (
-                          <span className="material-symbols-outlined text-white text-sm font-black">
-                            check
-                          </span>
-                        )}
+                        {isSelected && <Check className="size-4 text-white" />}
                       </div>
                       <span
                         className={`text-xs font-medium ${isSelected ? "text-[#2553A8]" : "text-slate-600"}`}
                       >
-                        {cat}
+                        {item.name}
                       </span>
                       <span
-                        className={`text-[8px] font-bold ${isSelected ? "text-[#2553A8]" : "text-slate-400"}`}
+                        className={`text-[8px] font-bold ${isSelected ? "text-[#2553A8]" : "text-slate-500"}`}
                       >
-                        ({getCategoryCount(cat)})
+                        ({getCategoryCount(item.name)})
                       </span>
                     </div>
 
                     {hasSubs && (
                       <button
-                        onClick={(e) => toggleCategoryExpand(cat, e)}
-                        className="p-1 rounded-full hover:bg-slate-100 text-slate-400 hover:text-[#2553A8] transition-colors"
+                        aria-label={
+                          isExpanded
+                            ? `Ocultar subcategorías de ${item.name}`
+                            : `Mostrar subcategorías de ${item.name}`
+                        }
+                        onClick={(e) => toggleCategoryExpand(item.name, e)}
+                        className="p-1 rounded-full hover:bg-slate-100 text-slate-500 hover:text-[#2553A8] transition-colors"
                       >
-                        <span
-                          className={`material-symbols-outlined text-lg transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
-                        >
-                          expand_more
-                        </span>
+                        <ChevronDown
+                          className={`size-5 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                        />
                       </button>
                     )}
                   </div>
@@ -221,7 +206,7 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
                       {subs.map((sub) => (
                         <div
                           key={sub}
-                          onClick={() => onUpdateUrl(cat, sub, false)}
+                          onClick={() => onUpdateUrl(item.name, sub, false)}
                           className="flex items-center gap-2 cursor-pointer group/sub"
                         >
                           <div
@@ -233,9 +218,9 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
                             {sub}
                           </span>
                           <span
-                            className={`text-[8px] font-bold ${selectedSub === sub ? "text-slate-800" : "text-slate-400"}`}
+                            className={`text-[8px] font-bold ${selectedSub === sub ? "text-slate-800" : "text-slate-500"}`}
                           >
-                            ({getSubCategoryCount(cat, sub)})
+                            ({getSubCategoryCount(item.name, sub)})
                           </span>
                         </div>
                       ))}
@@ -251,15 +236,18 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
       {/* 2. SECCIÓN PRECIO */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <button
+          aria-label={
+            sectionsOpen.price
+              ? "Cerrar filtro de precio"
+              : "Abrir filtro de precio"
+          }
           onClick={() => setSectionsOpen((p) => ({ ...p, price: !p.price }))}
           className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
         >
           <span className="font-bold text-slate-700 text-sm">Precio</span>
-          <span
-            className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${sectionsOpen.price ? "rotate-180" : ""}`}
-          >
-            expand_more
-          </span>
+          <ChevronDown
+            className={`transition-transform text-slate-500 size-5 ${sectionsOpen.price ? "rotate-180" : ""}`}
+          />
         </button>
         {sectionsOpen.price && (
           <div className="px-4 pb-6 space-y-4">
@@ -267,7 +255,12 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
               <span>$0</span>
               <span>{formatCurrency(maxPriceFilter)}</span>
             </div>
+            <label htmlFor="price-range" className="sr-only">
+              Filtrar por precio máximo
+            </label>
+
             <input
+              id="price-range"
               type="range"
               min="0"
               max={globalMaxPrice}
@@ -287,17 +280,20 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
       {availableHPs.length > 0 && (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden animate-in fade-in slide-in-from-top-4">
           <button
+            aria-label={
+              sectionsOpen.power
+                ? "Cerrar filtro de potencia"
+                : "Abrir filtro de potencia"
+            }
             onClick={() => setSectionsOpen((p) => ({ ...p, power: !p.power }))}
             className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
           >
             <span className="font-bold text-slate-700 text-sm">
               Potencia (HP)
             </span>
-            <span
-              className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${sectionsOpen.power ? "rotate-180" : ""}`}
-            >
-              expand_more
-            </span>
+            <ChevronDown
+              className={`size-5 text-slate-500 transition-transform ${sectionsOpen.power ? "rotate-180" : ""}`}
+            />
           </button>
           {sectionsOpen.power && (
             <div className="px-4 pb-4 space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
@@ -311,9 +307,7 @@ export const ProductSidebar: React.FC<ProductSidebarProps> = ({
                     className={`size-5 rounded border flex items-center justify-center transition-colors ${selectedHPs.includes(hp) ? "bg-[#2553A8] border-[#2553A8]" : "bg-white border-slate-300 group-hover:border-[#2553A8]"}`}
                   >
                     {selectedHPs.includes(hp) && (
-                      <span className="material-symbols-outlined text-white text-sm font-black">
-                        check
-                      </span>
+                      <Check className="size-4 text-white" />
                     )}
                   </div>
                   <span

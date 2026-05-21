@@ -5,24 +5,29 @@ import { Navbar } from "../components/Navbar";
 import Footer from "../components/Footer.astro";
 import { WhatsAppButton } from "../components/WhatsAppButton";
 import { Breadcrumbs } from "../components/Breadcrumbs";
+import { LIGHT_PRODUCTS } from "../data/products/products";
+
 
 interface Props {
   title: string;
   description?: string;
-  image?: string; // NUEVO: Imagen específica para redes sociales (ej: foto del producto)
+  image?: string;
 }
 
 const {
   title,
   description = "Compresores del Valle - Venta, mantenimiento y reparación de compresores en Cali y el Valle del Cauca.",
-  image = "/branding/logoCompresores1.png", // Imagen por defecto si no se pasa otra (Asegúrate de tener una imagen cuadrada o rectangular bonita para esto)
+  image = "/branding/logoCompresores1.webp",
 } = Astro.props;
 
-// 1. URL CANÓNICA (Vital para Google)
-// Resuelve la URL completa actual (ej: https://tusitio.com/productos)
+const optimizedTitle = title.includes("Compresores del Valle")
+  ? title
+  : `${title} | Compresores del Valle`;
+// 1. URL CANÓNICA
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-// 2. IMAGEN SOCIAL (Resuelve la ruta absoluta)
+// 2. IMAGEN SOCIAL
 const socialImageURL = new URL(image, Astro.site);
 ---
 
@@ -32,18 +37,33 @@ const socialImageURL = new URL(image, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/apple-touch-icon.webp"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon-32x32.webp"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon-16x16.webp"
+    />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- --- SEO BÁSICO --- -->
-    <title>{title}</title>
+    <title>{optimizedTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+    <meta name="robots" content="index, follow" />
 
-    <!-- --- OPEN GRAPH / FACEBOOK / WHATSAPP (Vital) --- -->
+    <!-- --- OPEN GRAPH / FACEBOOK / WHATSAPP --- -->
     <meta
       property="og:type"
       content={Astro.url.pathname.startsWith("/producto")
@@ -51,32 +71,18 @@ const socialImageURL = new URL(image, Astro.site);
         : "website"}
     />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={optimizedTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={socialImageURL} />
+    <meta property="og:site_name" content="Compresores del Valle" />
+    <meta property="og:locale" content="es_CO" />
 
     <!-- --- TWITTER --- -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={title} />
+    <meta property="twitter:title" content={optimizedTitle} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={socialImageURL} />
-
-    <!-- --- FUENTES Y ESTILOS --- -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
 
     <ClientRouter />
 
@@ -136,18 +142,18 @@ const socialImageURL = new URL(image, Astro.site);
   <body class="min-h-screen flex flex-col overflow-x-hidden bg-slate-50">
     <!-- Navbar Fijo -->
     <div transition:persist>
-      <Navbar client:load />
+      <Navbar searchData={LIGHT_PRODUCTS} client:idle />
     </div>
 
     <!-- Botón WhatsApp Fijo -->
     <div transition:persist>
-      <WhatsAppButton client:only="react" />
+      <WhatsAppButton client:visible />
     </div>
 
     <!-- Contenedor Maestro para espaciado superior -->
     <div class="pt-30 md:pt-48.5 flex-1 flex flex-col">
       <!-- Breadcrumbs -->
-      <Breadcrumbs client:only="react" />
+      <Breadcrumbs client:idle />
 
       <!-- Contenido Principal -->
       <main class="flex-1 w-full" transition:animate="fade">
@@ -160,11 +166,13 @@ const socialImageURL = new URL(image, Astro.site);
   </body>
 </html>
 
-<style>
+<style is:global>
   html,
   body {
     margin: 0;
     width: 100%;
     height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 </style>

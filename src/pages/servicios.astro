@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { Services } from "../components/Services";
-import { SERVICES } from "../data/constants";
+import { SERVICES } from "../data/services/services";
 
 // --- SCHEMA SEO AVANZADO ---
 const servicesSchema = {
@@ -49,10 +49,5 @@ const servicesSchema = {
     type="application/ld+json"
     set:html={JSON.stringify(servicesSchema)}
   />
-  <!-- 
-    IMPORTANTE: client:load
-    Esto es obligatorio porque el componente usa useState y useEffect para
-    las animaciones del header y las galerías.
-  -->
   <Services client:load />
 </Layout>

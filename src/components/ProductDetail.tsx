@@ -1,8 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
-import { PRODUCTS } from "../data/constants";
+import { PRODUCTS } from "../data/products/products";
 import { type Product } from "../data/types";
 import { formatCurrency } from "../utils/formatters";
+import {
+  ZoomIn,
+  CircleCheck,
+  Share2,
+  Settings,
+  ChevronDown,
+  ArrowRight,
+  X,
+  MoveHorizontal,
+  MoveVertical,
+} from "lucide-react";
+import {
+  MdOutlineVerified,
+  MdOutlineSupportAgent,
+  MdOutlinePayments,
+} from "react-icons/md";
+import { FaShippingFast, FaWhatsapp } from "react-icons/fa";
 
 export const ProductDetail: React.FC = () => {
   // --- ESTADOS ---
@@ -88,7 +105,7 @@ export const ProductDetail: React.FC = () => {
 
   if (loading)
     return (
-      <div className="min-h-screen pt-40 text-center text-slate-400 font-bold animate-pulse">
+      <div className="min-h-screen pt-40 text-center text-slate-500 font-bold animate-pulse">
         Cargando equipo...
       </div>
     );
@@ -122,6 +139,11 @@ export const ProductDetail: React.FC = () => {
   const variantTextForWa = currentVariant ? ` - ${currentVariant.name}` : "";
   const whatsappMsg = `Hola, me interesa: ${product.name}${variantTextForWa}`;
   const waHref = `https://wa.me/573127536787?text=${encodeURIComponent(whatsappMsg)}`;
+
+  // Texto dinámico para SEO (Google Imágenes)
+  const imageAltText = currentVariant
+    ? `${product.name} - ${currentVariant.name}`
+    : product.name;
 
   // --- LÓGICA DE RANGO DE PRECIO (Min - Max) ---
   let minVariantPrice = currentPrice;
@@ -158,7 +180,7 @@ export const ProductDetail: React.FC = () => {
                 setIsZoomOpen(false);
               }}
             >
-              <span className="material-symbols-outlined text-4xl">close</span>
+              <X className="size-9" />
             </button>
             <div className="relative w-full h-full flex items-center justify-center max-w-7xl max-h-[90vh]">
               <img
@@ -186,7 +208,7 @@ export const ProductDetail: React.FC = () => {
               <div className="absolute top-6 left-6 z-10 flex flex-col gap-2 pointer-events-none">
                 {isPromoActive && (
                   <div className="bg-red-600 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-wider shadow-lg w-fit animate-pulse">
-                    Oferta
+                    {product.promoLabel || "¡Oferta!"}
                   </div>
                 )}
                 {product.brand && (
@@ -196,10 +218,12 @@ export const ProductDetail: React.FC = () => {
                 )}
               </div>
               <img
-                alt={product.name}
+                alt={imageAltText}
                 className="w-full h-full object-contain mix-blend-multiply transition-transform duration-200 ease-out pointer-events-none"
                 src={currentImageSrc}
                 style={zoomStyle}
+                loading="eager"
+                decoding="async"
               />
               <div
                 className="absolute top-6 right-6 p-3 bg-white text-[#2553A8] rounded-2xl shadow-md border border-slate-100 cursor-pointer hover:scale-110 transition-transform z-20"
@@ -208,9 +232,7 @@ export const ProductDetail: React.FC = () => {
                   setIsZoomOpen(true);
                 }}
               >
-                <span className="material-symbols-outlined text-xl">
-                  zoom_in
-                </span>
+                <ZoomIn className="size-5" />
               </div>
             </div>
 
@@ -225,7 +247,7 @@ export const ProductDetail: React.FC = () => {
                     <img
                       src={img}
                       className="w-full h-full object-contain mix-blend-multiply"
-                      alt={`Vista ${idx + 1}`}
+                      alt={`${imageAltText} - Vista ${idx + 1}`}
                     />
                   </button>
                 ))}
@@ -243,21 +265,17 @@ export const ProductDetail: React.FC = () => {
                   </span>
                   {product.warranty && (
                     <span className="bg-green-50 text-green-700 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
-                      <span className="material-symbols-outlined text-xs">
-                        verified
-                      </span>{" "}
+                      <MdOutlineVerified className="size-4" />{" "}
                       {product.warranty}
                     </span>
                   )}
                 </div>
                 <button
                   onClick={handleShare}
-                  className="text-slate-400 hover:text-[#2553A8] transition-colors p-2 rounded-full hover:bg-slate-50"
+                  className="text-slate-500 hover:text-[#2553A8] transition-colors p-2 rounded-full hover:bg-slate-50"
                   title="Compartir"
                 >
-                  <span className="material-symbols-outlined text-xl">
-                    share
-                  </span>
+                  <Share2 className="size-5" />
                 </button>
               </div>
 
@@ -268,7 +286,7 @@ export const ProductDetail: React.FC = () => {
               {/* SELECCIÓN DE VARIANTES */}
               {hasVariants && (
                 <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 mt-2">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 block">
                     {product.variantType === "dropdown"
                       ? "Seleccione la Referencia / Medida"
                       : "Posición del Tanque"}
@@ -293,9 +311,7 @@ export const ProductDetail: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                        expand_more
-                      </span>
+                      <ChevronDown className="size-5 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500" />
                     </div>
                   ) : (
                     <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit">
@@ -309,14 +325,14 @@ export const ProductDetail: React.FC = () => {
                           className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${
                             activeVariant === idx
                               ? "bg-[#2553A8] text-white shadow-md"
-                              : "bg-transparent text-slate-400 hover:text-[#2553A8] hover:bg-blue-50"
+                              : "bg-transparent text-slate-500 hover:text-[#2553A8] hover:bg-blue-50"
                           }`}
                         >
-                          <span
-                            className={`material-symbols-outlined text-base inline-block transition-transform ${!variant.name.toLowerCase().includes("horizontal") ? "rotate-90" : ""}`}
-                          >
-                            arrow_range
-                          </span>
+                          {variant.name.toLowerCase().includes("horizontal") ? (
+                            <MoveHorizontal className="size-4 inline-block" />
+                          ) : (
+                            <MoveVertical className="size-4 inline-block" />
+                          )}
                           {variant.name}
                         </button>
                       ))}
@@ -327,16 +343,16 @@ export const ProductDetail: React.FC = () => {
 
               {/* PRECIOS */}
               <div className="pt-2">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
                   Precio de Venta
                 </p>
                 {showPriceRange ? (
                   <div className="flex flex-col gap-2">
                     <span className="text-3xl md:text-4xl font-black text-[#2553A8] leading-none tracking-tight">
-                      {formatCurrency(minVariantPrice)} -{" "}
-                      {formatCurrency(maxVariantPrice)}
+                      {formatCurrency(minVariantPrice ?? 0)} -{" "}
+                      {formatCurrency(maxVariantPrice ?? 0)}
                     </span>
-                    <span className="text-[9px] text-slate-400 font-medium uppercase tracking-wider">
+                    <span className="text-[9px] text-slate-500 font-medium uppercase tracking-wider">
                       Precio no incluye IVA
                     </span>
                   </div>
@@ -344,22 +360,22 @@ export const ProductDetail: React.FC = () => {
                   <div className="flex flex-col gap-2">
                     <div className="flex items-baseline gap-2">
                       <p className="text-4xl font-black text-red-600 leading-none">
-                        {formatCurrency(currentPromo!)}
+                        {formatCurrency(currentPromo ?? 0)}
                       </p>
-                      <p className="text-lg font-bold text-slate-400 line-through mb-1.5">
-                        {formatCurrency(currentPrice)}
+                      <p className="text-lg font-bold text-slate-500 line-through mb-1.5">
+                        {formatCurrency(currentPrice ?? 0)}
                       </p>
                     </div>
-                    <span className="text-[9px] text-slate-400 font-medium uppercase tracking-wider">
+                    <span className="text-[9px] text-slate-500 font-medium uppercase tracking-wider">
                       Precio no incluye IVA
                     </span>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2">
                     <span className="text-4xl font-black text-[#2553A8] leading-none">
-                      {formatCurrency(currentPrice)}
+                      {formatCurrency(currentPrice ?? 0)}
                     </span>
-                    <span className="text-[9px] text-slate-400 font-medium uppercase tracking-wider">
+                    <span className="text-[9px] text-slate-500 font-medium uppercase tracking-wider">
                       Precio no incluye IVA
                     </span>
                   </div>
@@ -367,16 +383,12 @@ export const ProductDetail: React.FC = () => {
 
                 <div className="flex flex-wrap gap-4 mt-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                   <span className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-green-500 text-sm">
-                      check_circle
-                    </span>{" "}
-                    Envío Nacional
+                    <CircleCheck className="size-4 text-green-500" /> Envío
+                    Nacional
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-green-500 text-sm">
-                      check_circle
-                    </span>{" "}
-                    Asesoría Técnica
+                    <CircleCheck className="size-4 text-green-500" /> Asesoría
+                    Técnica
                   </span>
                 </div>
               </div>
@@ -405,11 +417,11 @@ export const ProductDetail: React.FC = () => {
                   }}
                   className={`py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg transition-all group ${
                     isDropdownUnselected
-                      ? "bg-slate-200 text-slate-400 pointer-events-none shadow-none"
+                      ? "bg-slate-200 text-slate-500 pointer-events-none shadow-none"
                       : "bg-(--wa-green) hover:bg-[#20ba5a] text-white shadow-green-200 active:scale-95"
                   }`}
                 >
-                  <i className="fa-brands fa-whatsapp text-2xl"></i>
+                  <FaWhatsapp className="size-6" />
                   <div className="text-left">
                     <span className="block text-[10px] font-bold opacity-90 uppercase tracking-wider">
                       Cotizar Ahora
@@ -422,9 +434,7 @@ export const ProductDetail: React.FC = () => {
               </div>
 
               <div className="bg-slate-50 border border-slate-200 text-slate-600 py-4 px-6 rounded-2xl flex items-center justify-center gap-3">
-                <span className="material-symbols-outlined text-3xl text-[#2553A8]">
-                  support_agent
-                </span>
+                <MdOutlineSupportAgent className="size-8 text-[#2553A8]" />
                 <div className="text-left">
                   <span className="block text-[10px] font-bold opacity-70 uppercase tracking-wider">
                     Soporte
@@ -440,8 +450,7 @@ export const ProductDetail: React.FC = () => {
             {product.specs && Object.keys(product.specs).length > 0 && (
               <div className="space-y-4 pt-6">
                 <h3 className="text-sm font-black text-[#2553A8] uppercase tracking-widest flex items-center gap-2">
-                  <span className="material-symbols-outlined">settings</span>{" "}
-                  Especificaciones Técnicas
+                  <Settings className="size-4" /> Especificaciones Técnicas
                 </h3>
                 <div className="bg-white border border-slate-100 rounded-4xl overflow-hidden shadow-sm">
                   <table className="w-full text-sm">
@@ -472,17 +481,17 @@ export const ProductDetail: React.FC = () => {
               <div className="border border-slate-100 rounded-2xl overflow-hidden">
                 <button
                   onClick={() => toggleSection("payments")}
+                  aria-expanded={openSection === "payments"}
                   className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
                 >
                   <span className="text-xs font-black text-[#2553A8] uppercase tracking-widest flex items-center gap-2">
-                    <span className="material-symbols-outlined">payments</span>{" "}
-                    Medios de Pago
+                    <MdOutlinePayments className="size-4" /> Medios de Pago
                   </span>
-                  <span
-                    className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSection === "payments" ? "rotate-180" : ""}`}
-                  >
-                    expand_more
-                  </span>
+                  <ChevronDown
+                    className={`size-4 text-slate-500 transition-transform ${
+                      openSection === "payments" ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
                 {openSection === "payments" && (
                   <div className="p-4 bg-white text-sm text-slate-600 animate-in slide-in-from-top-2">
@@ -506,19 +515,17 @@ export const ProductDetail: React.FC = () => {
               <div className="border border-slate-100 rounded-2xl overflow-hidden">
                 <button
                   onClick={() => toggleSection("shipping")}
+                  aria-expanded={openSection === "shipping"}
                   className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
                 >
                   <span className="text-xs font-black text-[#2553A8] uppercase tracking-widest flex items-center gap-2">
-                    <span className="material-symbols-outlined">
-                      local_shipping
-                    </span>{" "}
-                    Entrega y Despachos
+                    <FaShippingFast className="size-4" /> Entrega y Despachos
                   </span>
-                  <span
-                    className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSection === "shipping" ? "rotate-180" : ""}`}
-                  >
-                    expand_more
-                  </span>
+                  <ChevronDown
+                    className={`size-4 text-slate-500 transition-transform ${
+                      openSection === "shipping" ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
                 {openSection === "shipping" && (
                   <div className="p-4 bg-white text-sm text-slate-600 animate-in slide-in-from-top-2">
@@ -562,12 +569,9 @@ export const ProductDetail: React.FC = () => {
               </h2>
               <a
                 href="/productos"
-                className="text-xs font-bold text-slate-400 hover:text-[#2553A8] flex items-center gap-1"
+                className="text-xs font-bold text-slate-500 hover:text-[#2553A8] flex items-center gap-1"
               >
-                Ver catálogo{" "}
-                <span className="material-symbols-outlined text-sm">
-                  arrow_forward
-                </span>
+                Ver catálogo <ArrowRight className="size-4" />
               </a>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -588,7 +592,7 @@ export const ProductDetail: React.FC = () => {
                       />
                       {p.promoPrice && (
                         <span className="absolute top-3 right-3 bg-red-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full">
-                          OFERTA
+                          {p.promoLabel || "¡Oferta!"}
                         </span>
                       )}
                     </div>
@@ -596,7 +600,7 @@ export const ProductDetail: React.FC = () => {
                       {p.name}
                     </h3>
                     <p className="text-sm font-bold text-slate-700 mt-auto pt-2">
-                      {formatCurrency(p.promoPrice || p.price)}
+                      {formatCurrency(p.promoPrice || p.price!)}
                     </p>
                   </a>
                 );

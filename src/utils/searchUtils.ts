@@ -3,7 +3,8 @@ export const removeAccents = (str: string): string => {
   return str
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
+    .toLowerCase()
+    .trim();
 };
 
 export const getLevenshteinDistance = (a: string, b: string): number => {
@@ -12,7 +13,7 @@ export const getLevenshteinDistance = (a: string, b: string): number => {
   );
 
   for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-  for (let j = 0; j <= b.length; j++) matrix[0][j] = j; // Faltaba inicializar la primera fila
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j; 
 
   for (let i = 1; i <= a.length; i++) {
     for (let j = 1; j <= b.length; j++) {

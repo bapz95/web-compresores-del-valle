@@ -5,11 +5,13 @@ import react from '@astrojs/react';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import sitemap from '@astrojs/sitemap';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://compresoresdelvalle.com',
   
-  integrations: [react()],
+  integrations: [react(), sitemap()],
 
   vite: {
     plugins: [tailwindcss()]

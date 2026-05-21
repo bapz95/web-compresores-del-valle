@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import { PRODUCTS } from "../data/products/products";
 import {
-  SERVICES,
-  PRODUCTS,
   complementaryCategories,
   compressorTypes,
   successStories,
@@ -9,28 +8,48 @@ import {
   slides,
   sectors,
   whyChooseUsFeatures,
-  BRAND_BADGES
-} from "../data/constants";
+  BRAND_BADGES,
+} from "../data/home/home";
+import { SERVICES } from "../data/services/services";
 import { formatCurrency } from "../utils/formatters";
 import { type ImageSource } from "../data/types";
-import { getImage } from "astro:assets";
-
+import { getImage } from "../data/shared/images";
+import compresoresHome from "../assets/home/seccion-complementarios/compresores-juntos-home.webp";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  ArrowRight,
+  ArrowLeft,
+  UnfoldHorizontal,
+} from "lucide-react";
 
 // --- COMPONENTE COLLAGE INTERACTIVO 3D POR QUÉ ELEGIRNOS---
 
 const CollageInteractivo: React.FC = () => {
-  const collageImages =[
-    {  src: "https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&q=80&w=600" },
-    {  src: "https://images.unsplash.com/photo-1590959651373-a3db0f38a961?auto=format&fit=crop&q=80&w=600" },
-    {  src: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=600" }
+  const collageImages = [
+    {
+      image: getImage("home/seccion-elegirnos/Equipo_trabajo.webp"),
+      alt: "Equipo de trabajo de Compresores del Valle",
+    },
+    {
+      image: getImage("nosotros/Empresa/compresores_del_valle_fachada.webp"),
+      alt: "Fachada de Compresores del Valle",
+    },
+    {
+      image: getImage(
+        "home/seccion-elegirnos/montaje-compresor-pulmon-secador.webp",
+      ),
+      alt: "Montaje industrial de compresor de tornillo con pulmón y secador",
+    },
   ];
 
-  const[positions, setPositions] = useState([0, 1, 2]); 
+  const [positions, setPositions] = useState([0, 1, 2]);
 
   // Lógica híbrida para las insignias (Sellos PNG)
   const getBadgeSrc = (badge: any) => {
-    if (!badge) return '';
-    return typeof badge === 'string' ? badge : badge.src;
+    if (!badge) return "";
+    return typeof badge === "string" ? badge : badge.src;
   };
 
   const expSrc = getBadgeSrc(BRAND_BADGES?.experiencia);
@@ -40,9 +59,9 @@ const CollageInteractivo: React.FC = () => {
     const clickedCurrentPos = positions[clickedImgIndex];
     if (clickedCurrentPos === 1) return;
 
-    setPositions(prevPositions => {
+    setPositions((prevPositions) => {
       const newPos = [...prevPositions];
-      const currentCenterImgIndex = prevPositions.findIndex(p => p === 1);
+      const currentCenterImgIndex = prevPositions.findIndex((p) => p === 1);
       newPos[currentCenterImgIndex] = clickedCurrentPos;
       newPos[clickedImgIndex] = 1;
       return newPos;
@@ -50,9 +69,12 @@ const CollageInteractivo: React.FC = () => {
   };
 
   const getTransformClasses = (pos: number) => {
-    if (pos === 0) return "translate-x-[-30%] md:translate-x-[-55%] rotate-[-12deg] z-10 scale-90 brightness-75 cursor-pointer hover:-translate-y-4 hover:brightness-95";
-    if (pos === 1) return "translate-x-0 rotate-0 z-30 scale-110 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] brightness-100";
-    if (pos === 2) return "translate-x-[30%] md:translate-x-[55%] rotate-[12deg] z-10 scale-90 brightness-75 cursor-pointer hover:-translate-y-4 hover:brightness-95";
+    if (pos === 0)
+      return "translate-x-[-30%] md:translate-x-[-55%] rotate-[-12deg] z-10 scale-90 brightness-75 cursor-pointer hover:-translate-y-4 hover:brightness-95";
+    if (pos === 1)
+      return "translate-x-0 rotate-0 z-30 scale-110 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] brightness-100";
+    if (pos === 2)
+      return "translate-x-[30%] md:translate-x-[55%] rotate-[12deg] z-10 scale-90 brightness-75 cursor-pointer hover:-translate-y-4 hover:brightness-95";
     return "";
   };
 
@@ -63,29 +85,35 @@ const CollageInteractivo: React.FC = () => {
       {collageImages.map((img, idx) => {
         const currentPos = positions[idx];
         return (
-          <div 
+          <div
             key={idx}
             onClick={() => handleSwap(idx)}
             className={`absolute w-44 md:w-60 aspect-[3/4] bg-white p-1 md:p-2 rounded-[1.5rem] md:rounded-[2rem] transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${getTransformClasses(currentPos)}`}
           >
             <div className="w-full h-full bg-slate-50 rounded-xl md:rounded-[1.5rem] overflow-hidden relative flex items-center justify-center border border-slate-100">
-              <img src={img.src} />
+              <img
+                src={typeof img.image === "string" ? img.image : img.image.src}
+                alt={img.alt}
+                loading="lazy"
+              />
             </div>
 
             {/* SELLO EXPERIENCIA (Arriba Izquierda, Inclinado) */}
             {currentPos === 1 && expSrc && (
-              <img 
-                src={expSrc} 
-                alt="Experiencia CDV" 
+              <img
+                src={expSrc}
+                alt="Experiencia CDV"
+                loading="lazy"
                 className="absolute -top-6 -left-6 md:-top-10 md:-left-10 w-24 md:w-32 z-40 -rotate-12 drop-shadow-xl animate-in zoom-in duration-500 pointer-events-none"
               />
             )}
 
             {/* SELLO GARANTÍA (Arriba Derecha, Atrás) */}
             {currentPos === 2 && garSrc && (
-              <img 
-                src={garSrc} 
-                alt="Garantía" 
+              <img
+                src={garSrc}
+                alt="Garantía"
+                loading="lazy"
                 className="absolute -top-4 -right-4 md:-top-6 md:-right-6 w-20 md:w-28 z-20 rotate-6 drop-shadow-lg opacity-90 hover:opacity-100 transition-opacity animate-in fade-in duration-500 pointer-events-none"
               />
             )}
@@ -118,7 +146,7 @@ const BeforeAfterSlider: React.FC<{
   return (
     <div
       ref={containerRef}
-      className="relative aspect-video rounded-[3rem] overflow-hidden cursor-ew-resize select-none border-8 border-white shadow-2xl bg-slate-200 group"
+      className="relative aspect-4/3 rounded-[3rem] overflow-hidden cursor-ew-resize select-none border-8 border-white shadow-2xl bg-slate-200 group"
       onMouseMove={handleMove}
       onTouchMove={handleMove}
     >
@@ -126,6 +154,7 @@ const BeforeAfterSlider: React.FC<{
         <img
           src={beforeSrc}
           alt="Antes"
+          loading="lazy"
           className="w-full h-full object-cover"
         />
         <div className="absolute top-8 right-8 z-10 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-widest border border-white/20">
@@ -139,9 +168,10 @@ const BeforeAfterSlider: React.FC<{
         <img
           src={afterSrc}
           alt="Después"
+          loading="lazy"
           className="w-full h-full object-cover"
         />
-        <div className="absolute top-8 left-8 z-30 bg-(--brand-yellow) text-[#2553A8] text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-widest shadow-xl">
+        <div className="absolute top-8 left-8 z-30 bg-(--brand-yellow) text-[#013189] text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-widest shadow-xl">
           Después
         </div>
       </div>
@@ -150,9 +180,7 @@ const BeforeAfterSlider: React.FC<{
         style={{ left: `${sliderPos}%` }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-14 bg-[#2553A8] rounded-2xl shadow-2xl flex items-center justify-center border-4 border-white">
-          <span className="material-symbols-outlined text-white font-black text-3xl rotate-90">
-            unfold_more
-          </span>
+          <UnfoldHorizontal className="size-10" />
         </div>
       </div>
     </div>
@@ -175,7 +203,7 @@ export const Home: React.FC = () => {
     }, 6000);
     return () => clearInterval(timer);
   }, [currentSlide]);
-
+  const [expandedDesc, setExpandedDesc] = useState(false);
   const nextStory = () =>
     setCurrentStory((prev) => (prev + 1) % successStories.length);
   const prevStory = () =>
@@ -193,7 +221,8 @@ export const Home: React.FC = () => {
       <section className="relative h-[70vh] md:h-[65vh] min-h-130 md:min-h-140 max-h-180 overflow-hidden bg-slate-900">
         {slides.map((slide, index) => {
           const isActive = index === currentSlide;
-          const imgSrc = typeof slide.image === "string" ? slide.image : slide.image.src;
+          const imgSrc =
+            typeof slide.image === "string" ? slide.image : slide.image.src;
           return (
             <div
               key={index}
@@ -205,7 +234,8 @@ export const Home: React.FC = () => {
                 <img
                   src={imgSrc}
                   alt={slide.title}
-                  className={`w-full h-full object-cover transition-transform duration-7000 ease-out ${
+                  fetchPriority="high"
+                  className={`w-full h-full object-cover transition-transform duration-2000 ease-out ${
                     isActive ? "scale-110" : "scale-100"
                   }`}
                 />
@@ -241,7 +271,7 @@ export const Home: React.FC = () => {
                   {/* Botones Dinámicos */}
                   <a
                     href={slide.primaryCta.link}
-                    className="bg-(--brand-yellow) hover:bg-(--hover-yellow) text-[#2553A8] font-black py-4 px-8 md:py-5 md:px-12 rounded-2xl transition-all shadow-xl shadow-yellow-500/20 active:scale-95 uppercase tracking-widest text-xs md:text-sm"
+                    className="bg-(--brand-yellow) hover:bg-(--hover-yellow) text-[#013189] font-black py-4 px-8 md:py-5 md:px-12 rounded-2xl transition-all shadow-xl shadow-yellow-500/20 active:scale-95 uppercase tracking-widest text-xs md:text-sm"
                   >
                     {slide.primaryCta.text}
                   </a>
@@ -263,6 +293,7 @@ export const Home: React.FC = () => {
         {/* Navigation Arrows */}
         <div className="absolute inset-x-4 md:inset-x-8 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none z-30">
           <button
+            aria-label="Ver banner anterior"
             onClick={() =>
               setCurrentSlide((prev) =>
                 prev === 0 ? slides.length - 1 : prev - 1,
@@ -270,19 +301,16 @@ export const Home: React.FC = () => {
             }
             className="pointer-events-auto size-10 md:size-14 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-[#F2B705] hover:text-[#2553A8] transition-all flex items-center justify-center group"
           >
-            <span className="material-symbols-outlined font-black text-xl md:text-3xl group-hover:-translate-x-1 transition-transform">
-              chevron_left
-            </span>
+            <ChevronLeft className="size-5 md:size-8 font-black group-hover:-translate-x-1 transition-transform" />
           </button>
           <button
+            aria-label="Ver banner siguiente"
             onClick={() =>
               setCurrentSlide((prev) => (prev + 1) % slides.length)
             }
             className="pointer-events-auto size-10 md:size-14 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-[#F2B705] hover:text-[#2553A8] transition-all flex items-center justify-center group"
           >
-            <span className="material-symbols-outlined font-black text-xl md:text-3xl group-hover:translate-x-1 transition-transform">
-              chevron_right
-            </span>
+            <ChevronRight className="size-5 md:size-8 font-black group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
       </section>
@@ -294,7 +322,7 @@ export const Home: React.FC = () => {
             <p className="text-3xl md:text-4xl font-black text-[#2553A8]">
               25+
             </p>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2">
               Años de Trayectoria
             </p>
           </div>
@@ -302,7 +330,7 @@ export const Home: React.FC = () => {
             <p className="text-3xl md:text-4xl font-black text-[#2553A8]">
               500+
             </p>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2">
               Empresas Aliadas
             </p>
           </div>
@@ -310,7 +338,7 @@ export const Home: React.FC = () => {
             <p className="text-3xl md:text-4xl font-black text-[#2553A8]">
               1.2k +
             </p>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2">
               Equipos Instalados
             </p>
           </div>
@@ -322,7 +350,7 @@ export const Home: React.FC = () => {
         <section className="max-w-7xl mx-auto px-4 space-y-12">
           <div className="flex flex-col md:flex-row justify-between gap-6">
             <div className="space-y-4">
-              <span className="text-red-500 font-black uppercase tracking-[0.3em] text-sm animate-pulse">
+              <span className="bg-yellow-100 text-[#013189] px-3 py-1 rounded-full font-black uppercase tracking-[0.3em] text-sm">
                 Ofertas del Mes
               </span>
               <h2 className="text-4xl md:text-5xl font-black text-[#2553A8] uppercase tracking-tighter">
@@ -335,9 +363,7 @@ export const Home: React.FC = () => {
               className="group flex items-center gap-2 text-[#2553A8] font-black text-sm uppercase tracking-widest hover:text-(--brand-yellow) transition-colors"
             >
               Ver todas las ofertas{" "}
-              <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
-                arrow_forward
-              </span>
+              <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
             </a>
           </div>
 
@@ -359,12 +385,12 @@ export const Home: React.FC = () => {
               return (
                 <a
                   key={product.id}
-                  href={`/producto/${product.id}`} 
+                  href={`/producto/${product.id}`}
                   className="group bg-white rounded-3xl border border-slate-100 hover:border-red-200 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col relative"
                 >
                   {/* Etiqueta Flotante */}
                   <div className="absolute top-4 right-4 z-20 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
-                    ¡Oferta!
+                    {product.promoLabel || "¡Oferta!"}
                   </div>
 
                   {/* CONTENEDOR DE IMAGEN CON EFECTO HOVER */}
@@ -391,7 +417,7 @@ export const Home: React.FC = () => {
                   </div>
 
                   <div className="p-6 flex flex-col grow space-y-3">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
                       {product.category}
                     </span>
                     <h3 className="font-bold text-slate-800 leading-tight group-hover:text-[#2553A8] transition-colors line-clamp-2">
@@ -400,8 +426,8 @@ export const Home: React.FC = () => {
 
                     <div className="mt-auto pt-2">
                       <div className="flex flex-col">
-                        <span className="text-xs text-slate-400 line-through font-bold">
-                          {formatCurrency(product.price)}
+                        <span className="text-xs text-slate-500 line-through font-bold">
+                          {formatCurrency(product.price ? product.price : 0)}
                         </span>
                         <span className="text-xl font-black text-red-600">
                           {formatCurrency(product.promoPrice!)}
@@ -418,7 +444,7 @@ export const Home: React.FC = () => {
       {/* 4. SECCIÓN CATEGORIAS PRINCIPALES */}
       <section className="max-w-7xl mx-auto px-4 space-y-16">
         <div className="text-center space-y-4">
-          <span className="text-(--brand-yellow) font-black uppercase tracking-[0.3em] text-sm">
+          <span className="bg-yellow-100 text-[#013189] px-3 py-1 rounded-full font-black uppercase tracking-[0.3em] text-sm">
             Tipos de compresores
           </span>
           <h2 className="text-4xl md:text-5xl font-black text-[#2553A8] uppercase tracking-tighter">
@@ -450,6 +476,7 @@ export const Home: React.FC = () => {
                   <img
                     src={imgSrc}
                     alt={type.title}
+                    loading="lazy"
                     className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
@@ -463,11 +490,9 @@ export const Home: React.FC = () => {
                     {type.description}
                   </p>
                   <div className="mt-auto">
-                    <span className="inline-flex items-center gap-2 bg-(--brand-yellow) text-[#2553A8] font-black text-[10px] uppercase tracking-widest px-5 py-2.5 rounded-xl group-hover:bg-[#d9a404] transition-colors shadow-md">
+                    <span className="inline-flex items-center gap-2 bg-(--brand-yellow) text-[#013189] font-black text-[10px] uppercase tracking-widest px-5 py-2.5 rounded-xl group-hover:bg-[#d9a404] transition-colors shadow-md">
                       VER CATEGORÍA
-                      <span className="material-symbols-outlined text-sm">
-                        arrow_forward
-                      </span>
+                      <ArrowRight className="size-4" />
                     </span>
                   </div>
                 </div>
@@ -481,7 +506,7 @@ export const Home: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4 space-y-16 py-12">
         {/* Encabezado */}
         <div className="text-center space-y-4">
-          <span className="text-(--brand-yellow) font-black uppercase tracking-[0.3em] text-sm">
+          <span className="bg-yellow-100 text-[#013189] px-3 py-1 rounded-full font-black uppercase tracking-[0.3em] text-sm">
             Productos Complementarios
           </span>
           <h2 className="text-3xl md:text-5xl font-black text-[#2553A8] uppercase tracking-tighter">
@@ -489,8 +514,11 @@ export const Home: React.FC = () => {
           </h2>
           <p className="text-slate-500 font-medium text-base md:text-lg max-w-4xl mx-auto leading-relaxed">
             Más allá del compresor, asegura la eficiencia y calidad de tu
-            operación. Tenemos <span className="text-[#2553A8] font-bold">repuestos, tanques, motores, herramientas y
-            accesorios </span> para un sistema completo y sin fallas.
+            operación. Tenemos{" "}
+            <span className="text-[#2553A8] font-bold">
+              repuestos, tanques, motores, herramientas y accesorios{" "}
+            </span>{" "}
+            para un sistema completo y sin fallas.
           </p>
           <div className="h-1.5 w-24 bg-(--brand-yellow) mx-auto rounded-full mt-4"></div>
         </div>
@@ -512,7 +540,8 @@ export const Home: React.FC = () => {
                   <div className="h-16 sm:h-20 w-full flex items-center justify-center shrink-0">
                     <img
                       src={imgSrc}
-                      alt={cat.title}
+                      alt=""
+                      loading="lazy"
                       className="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
                     />
                   </div>
@@ -526,31 +555,12 @@ export const Home: React.FC = () => {
           <div className="w-full lg:w-7/12 relative flex items-center justify-center bg-slate-50/50 rounded-[3rem] p-8 md:p-12 border border-slate-100 min-h-100 lg:min-h-125 overflow-hidden group">
             {/* Fondo decorativo (Círculo sutil) */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 aspect-square bg-blue-100/50 rounded-full blur-3xl pointer-events-none"></div>
-
-            {/* Imagen del collage */}
             <img
-              // RECUERDA: Cambiar esto por tu collage PNG transparente cuando lo tengas
-              src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200"
+              src={compresoresHome.src}
               alt="Equipos complementarios Compresores del Valle"
-              className="w-full h-full object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-700 relative z-10"
+              loading="lazy"
+              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 relative z-10 mix-blend-multiply"
             />
-
-            {/* Insignia de Confianza flotante */}
-            <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 bg-white p-4 md:p-5 rounded-2xl shadow-2xl border border-slate-100 flex items-center gap-3 animate-bounce-slow z-20">
-              <span className="material-symbols-outlined text-(--brand-yellow) text-3xl md:text-4xl">
-                workspace_premium
-              </span>
-              <div className="flex flex-col text-left">
-                <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Respaldo Total
-                </span>
-                <span className="text-xs md:text-sm font-black text-[#2553A8] uppercase leading-none">
-                  Repuestos
-                  <br />
-                  Originales
-                </span>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -558,7 +568,7 @@ export const Home: React.FC = () => {
       {/* 5. Services Overview */}
       <section className="max-w-7xl mx-auto px-4 space-y-16">
         <div className="text-center space-y-4">
-          <span className="text-(--brand-yellow) font-black uppercase tracking-[0.3em] text-sm">
+          <span className="bg-yellow-100 text-[#013189] px-3 py-1 rounded-full font-black uppercase tracking-[0.3em] text-sm">
             Soluciones Integrales
           </span>
           <h2 className="text-5xl md:text-6xl font-black text-[#2553A8] uppercase tracking-tighter">
@@ -574,9 +584,7 @@ export const Home: React.FC = () => {
               className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 hover:border-[#2553A8] hover:bg-white hover:shadow-2xl transition-all group flex flex-col"
             >
               <div className="size-16 bg-white rounded-2xl flex items-center justify-center text-[#2553A8] shadow-sm mb-8 group-hover:bg-[#2553A8] group-hover:text-white transition-colors">
-                <span className="material-symbols-outlined text-4xl font-black">
-                  {service.icon}
-                </span>
+                <service.icon className="size-10" />
               </div>
               <h3 className="text-2xl font-black text-[#2553A8] uppercase mb-4 leading-tight">
                 {service.title}
@@ -588,10 +596,7 @@ export const Home: React.FC = () => {
                 href="/servicios"
                 className="inline-flex items-center gap-2 text-[#2553A8] font-black text-[10px] uppercase tracking-widest hover:translate-x-2 transition-transform"
               >
-                Ver detalles técnicos{" "}
-                <span className="material-symbols-outlined text-sm">
-                  arrow_forward
-                </span>
+                Ver detalles técnicos <ArrowRight className="size-4" />
               </a>
             </div>
           ))}
@@ -599,7 +604,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 6. SUCCESS STORIES */}
-      <section className="bg-slate-900 py-32 relative overflow-hidden text-white">
+      <section className="bg-slate-900 py-12 relative overflow-hidden text-white">
         <div className="absolute inset-0 grid-pattern opacity-5"></div>
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
@@ -607,7 +612,7 @@ export const Home: React.FC = () => {
               <span className="text-(--brand-yellow) font-black uppercase tracking-[0.4em] text-xs italic">
                 Evidencia Técnica
               </span>
-              <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none">
+              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none">
                 Casos de <br />
                 <span className="text-(--brand-yellow)">Transformación</span>
               </h2>
@@ -616,25 +621,29 @@ export const Home: React.FC = () => {
 
             <div className="flex gap-4">
               <button
-                onClick={prevStory}
+                aria-label="Proyecto anterior"
+                onClick={() => {
+                  prevStory();
+                  setExpandedDesc(false);
+                }}
                 className="size-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-(--brand-yellow) hover:text-[#2553A8] transition-all"
               >
-                <span className="material-symbols-outlined font-black text-3xl">
-                  arrow_back
-                </span>
+                <ArrowLeft className="size-8" />
               </button>
               <button
-                onClick={nextStory}
+                aria-label="Siguiente proyecto"
+                onClick={() => {
+                  nextStory();
+                  setExpandedDesc(false);
+                }}
                 className="size-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-(--brand-yellow) hover:text-[#2553A8] transition-all shadow-2xl"
               >
-                <span className="material-symbols-outlined font-black text-3xl">
-                  arrow_forward
-                </span>
+                <ArrowRight className="size-8" />
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
             <div className="lg:col-span-7">
               {successStories.map((story, i) => (
                 <div
@@ -654,22 +663,37 @@ export const Home: React.FC = () => {
                   key={`info-${i}`}
                   className={`${i === currentStory ? "block" : "hidden"} space-y-6 animate-in slide-in-from-right-10 duration-700`}
                 >
-                  <div className="inline-block bg-(--brand-yellow) text-[#2553A8] font-black px-4 py-1 rounded text-[10px] uppercase">
+                  <div className="inline-block bg-(--brand-yellow) text-[#013189] font-black px-4 py-1 rounded text-[10px] uppercase">
                     PROYECTO 0{i + 1}
                   </div>
-                  <h3 className="text-4xl md:text-5xl font-black uppercase leading-tight">
+                  <h3 className="text-4xl md:text-4xl font-black uppercase leading-tight">
                     {story.title}
                   </h3>
                   <p className="text-(--brand-yellow) font-bold text-xl">
                     {story.subtitle}
                   </p>
-                  <p className="text-white/60 text-lg leading-relaxed">
-                    {story.description}
-                  </p>
+
+                  {/* --- LÓGICA DE VER MÁS / VER MENOS --- */}
+                  <div className="space-y-2">
+                    <p
+                      className={`text-white/90 text-sm md:text-base leading-relaxed transition-all duration-300 ${expandedDesc ? "" : "line-clamp-3"}`}
+                    >
+                      {story.description}
+                    </p>
+                    <button
+                      onClick={() => setExpandedDesc(!expandedDesc)}
+                      className="text-(--brand-yellow) text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 opacity-80 hover:opacity-100"
+                    >
+                      {expandedDesc ? "Ocultar descripción" : "Ver más..."}
+                      <ChevronDown
+                        className={`size-4 transition-transform ${expandedDesc ? "rotate-180" : ""}`}
+                      />
+                    </button>
+                  </div>
 
                   <div className="pt-4 flex items-center gap-8">
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-white/30">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-white/60">
                         Resultado
                       </span>
                       <span className="text-2xl font-black text-green-400">
@@ -678,7 +702,7 @@ export const Home: React.FC = () => {
                     </div>
                     <div className="w-px h-10 bg-white/10"></div>
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-white/30">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-white/60">
                         Garantía
                       </span>
                       <span className="text-2xl font-black">3 MESES</span>
@@ -691,7 +715,11 @@ export const Home: React.FC = () => {
                 {successStories.map((_, i) => (
                   <button
                     key={i}
-                    onClick={() => setCurrentStory(i)}
+                    aria-label={`Ver proyecto ${i + 1}`}
+                    onClick={() => {
+                      setCurrentStory(i);
+                      setExpandedDesc(false);
+                    }}
                     className={`h-1.5 transition-all rounded-full ${i === currentStory ? "w-12 bg-(--brand-yellow)" : "w-4 bg-white/20"}`}
                   />
                 ))}
@@ -704,60 +732,69 @@ export const Home: React.FC = () => {
       {/* --- 7. POR QUÉ ELEGIRNOS (Textos inmersos y Flip Vertical 3D) --- */}
       <section className="py-12 md:py-16 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4">
-
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            
             {/* --- COLUMNA IZQUIERDA (Íconos 1 y 2) --- */}
             <div className="lg:col-span-3 flex flex-col gap-4 lg:gap-8 order-2 lg:order-1">
               {whyChooseUsFeatures.slice(0, 2).map((feat, idx) => (
-                <div key={idx} className="group relative bg-white lg:bg-transparent lg:cursor-pointer lg:[perspective:1000px] rounded-3xl p-4 lg:p-0 border border-slate-100 lg:border-none shadow-sm lg:shadow-none mb-4 lg:mb-0 lg:h-56">
-                   
-                   {/* MOBILE VIEW: Estático y limpio */}
-                   <div className="flex lg:hidden flex-row items-center gap-4">
-                      <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center shrink-0 text-[#2553A8]">
-                         <span className="material-symbols-outlined text-4xl">{feat.icon}</span>
-                      </div>
-                      <div className="flex-1 text-left">
-                         <h3 className="font-black text-[#2553A8] uppercase text-[11px] tracking-widest mb-1">{feat.title}</h3>
-                         <p className="text-slate-500 text-[10px] leading-relaxed font-medium">{feat.description}</p>
-                      </div>
-                   </div>
+                <div
+                  key={idx}
+                  className="group relative bg-white lg:bg-transparent lg:cursor-pointer lg:[perspective:1000px] rounded-3xl p-4 lg:p-0 border border-slate-100 lg:border-none shadow-sm lg:shadow-none mb-4 lg:mb-0 lg:h-56"
+                >
+                  {/* MOBILE VIEW: Estático y limpio */}
+                  <div className="flex lg:hidden flex-row items-center gap-4">
+                    <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center shrink-0 text-[#2553A8]">
+                      <feat.icon className="size-10" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <h3 className="font-black text-[#2553A8] uppercase text-[11px] tracking-widest mb-1">
+                        {feat.title}
+                      </h3>
+                      <p className="text-slate-500 text-[10px] leading-relaxed font-medium">
+                        {feat.description}
+                      </p>
+                    </div>
+                  </div>
 
-                   {/* DESKTOP VIEW: Flip Card Hacia Arriba (Animación suave y reparada) */}
-                   <div className="hidden lg:block relative w-full h-full transition-transform duration-1000 ease-in-out [transform-style:preserve-3d] lg:group-hover:[transform:rotateX(180deg)]">
-                     
-                     {/* FRENTE: Ícono Gigante (80px) */}
-                     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-white rounded-3xl border border-slate-100 shadow-sm [backface-visibility:hidden]">
-                        <span className="material-symbols-outlined text-[#2553A8] mb-4 drop-shadow-sm" style={{ fontSize: '60px' }}>{feat.icon}</span>
-                        <h3 className="font-black text-slate-700 uppercase text-xs tracking-widest px-2 text-center">{feat.title}</h3>
-                     </div>
-                     
-                     {/* DORSO: Título y Descripción (Derecho para leer) */}
-                     <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white shadow-2xl rounded-3xl border border-[#2553A8]/20 [backface-visibility:hidden] [transform:rotateX(180deg)]">
-                        <h3 className="font-black text-[#2553A8] uppercase text-xs tracking-widest mb-3 leading-tight text-center">{feat.title}</h3>
-                        <p className="text-slate-500 text-xs leading-relaxed font-medium text-center">
-                          {feat.description}
-                        </p>
-                     </div>
+                  <div className="hidden lg:block relative w-full h-full transition-transform duration-1000 ease-in-out [transform-style:preserve-3d] lg:group-hover:[transform:rotateX(180deg)]">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-white rounded-3xl border border-slate-100 shadow-sm [backface-visibility:hidden]">
+                      <feat.icon
+                        className="size-10 text-[#2553A8] mb-4 drop-shadow-sm"
+                        style={{ fontSize: "60px" }}
+                      />
+                      <h3 className="font-black text-slate-700 uppercase text-xs tracking-widest px-2 text-center">
+                        {feat.title}
+                      </h3>
+                    </div>
 
-                   </div>
+                    {/* DORSO: Título y Descripción */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white shadow-2xl rounded-3xl border border-[#2553A8]/20 [backface-visibility:hidden] [transform:rotateX(180deg)]">
+                      <h3 className="font-black text-[#2553A8] uppercase text-xs tracking-widest mb-3 leading-tight text-center">
+                        {feat.title}
+                      </h3>
+                      <p className="text-slate-500 text-xs leading-relaxed font-medium text-center">
+                        {feat.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
 
             {/* --- COLUMNA CENTRAL (Textos inmersos + Collage) --- */}
             <div className="lg:col-span-6 flex flex-col items-center order-1 lg:order-2">
-              
               <div className="text-center space-y-3 mb-4 md:mb-8 px-4">
-                <span className="text-red-500 font-black uppercase tracking-[0.3em] text-[10px] md:text-xs animate-pulse">
+                <span className="bg-yellow-100 text-[#013189] px-3 py-1 rounded-full font-black uppercase tracking-[0.3em] text-[10px] md:text-xs">
                   Por qué elegirnos
                 </span>
-                <h2 className="text-3xl md:text-4xl font-black text-[#2553A8] uppercase tracking-tighter">  
+                <h2 className="text-3xl md:text-4xl font-black text-[#2553A8] uppercase tracking-tighter">
                   TU ESPECIALISTA EN COMPRESORES
                 </h2>
                 <p className="text-slate-500 font-medium text-sm max-w-lg mx-auto leading-relaxed">
-                  Miles de equipos operando a nivel nacional. 
-                  Respaldados por <strong className="text-[#2553A8]">más de 25 años de experiencia </strong> y consolidados como una empresa lider en el sector.
+                  Miles de equipos operando a nivel nacional. Respaldados por{" "}
+                  <strong className="text-[#2553A8]">
+                    más de 25 años de experiencia{" "}
+                  </strong>{" "}
+                  y consolidados como una empresa lider en el sector.
                 </p>
               </div>
 
@@ -765,47 +802,56 @@ export const Home: React.FC = () => {
               <div className="w-full transform scale-90 md:scale-100">
                 <CollageInteractivo />
               </div>
-              
             </div>
 
             {/* --- COLUMNA DERECHA (Íconos 3 y 4) --- */}
             <div className="lg:col-span-3 flex flex-col gap-4 lg:gap-8 order-3">
               {whyChooseUsFeatures.slice(2, 4).map((feat, idx) => (
-                <div key={idx} className="group relative bg-white lg:bg-transparent lg:cursor-pointer lg:[perspective:1000px] rounded-3xl p-4 lg:p-0 border border-slate-100 lg:border-none shadow-sm lg:shadow-none mb-4 lg:mb-0 lg:h-56">
-                   
-                   {/* MOBILE VIEW */}
-                   <div className="flex lg:hidden flex-row items-center gap-4">
-                      <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center shrink-0 text-[#2553A8]">
-                         <span className="material-symbols-outlined text-4xl">{feat.icon}</span>
-                      </div>
-                      <div className="flex-1 text-left">
-                         <h3 className="font-black text-[#2553A8] uppercase text-[11px] tracking-widest mb-1">{feat.title}</h3>
-                         <p className="text-slate-500 text-[10px] leading-relaxed font-medium">{feat.description}</p>
-                      </div>
-                   </div>
+                <div
+                  key={idx}
+                  className="group relative bg-white lg:bg-transparent lg:cursor-pointer lg:[perspective:1000px] rounded-3xl p-4 lg:p-0 border border-slate-100 lg:border-none shadow-sm lg:shadow-none mb-4 lg:mb-0 lg:h-56"
+                >
+                  {/* MOBILE VIEW */}
+                  <div className="flex lg:hidden flex-row items-center gap-4">
+                    <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center shrink-0 text-[#2553A8]">
+                      <feat.icon className="size-10" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <h3 className="font-black text-[#2553A8] uppercase text-[11px] tracking-widest mb-1">
+                        {feat.title}
+                      </h3>
+                      <p className="text-slate-500 text-[10px] leading-relaxed font-medium">
+                        {feat.description}
+                      </p>
+                    </div>
+                  </div>
 
-                   {/* DESKTOP VIEW (Flip Hacia Arriba) */}
-                   <div className="hidden lg:block relative w-full h-full transition-transform duration-1000 ease-in-out [transform-style:preserve-3d] lg:group-hover:[transform:rotateX(180deg)]">
-                     
-                     {/* FRENTE */}
-                     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-white rounded-3xl border border-slate-100 shadow-sm [backface-visibility:hidden]">
-                        <span className="material-symbols-outlined text-[#2553A8] mb-4 drop-shadow-sm" style={{ fontSize: '60px' }}>{feat.icon}</span>
-                        <h3 className="font-black text-slate-700 uppercase text-xs tracking-widest px-2 text-center">{feat.title}</h3>
-                     </div>
-                     
-                     {/* DORSO */}
-                     <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white shadow-2xl rounded-3xl border border-[#2553A8]/20 [backface-visibility:hidden] [transform:rotateX(180deg)]">
-                        <h3 className="font-black text-[#2553A8] uppercase text-xs tracking-widest mb-3 leading-tight text-center">{feat.title}</h3>
-                        <p className="text-slate-500 text-[11px] leading-relaxed font-medium text-center">
-                          {feat.description}
-                        </p>
-                     </div>
+                  {/* DESKTOP VIEW (Flip Hacia Arriba) */}
+                  <div className="hidden lg:block relative w-full h-full transition-transform duration-1000 ease-in-out [transform-style:preserve-3d] lg:group-hover:[transform:rotateX(180deg)]">
+                    {/* FRENTE */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-white rounded-3xl border border-slate-100 shadow-sm [backface-visibility:hidden]">
+                      <feat.icon
+                        className="size-10 text-[#2553A8] mb-4 drop-shadow-sm"
+                        style={{ fontSize: "60px" }}
+                      />
+                      <h3 className="font-black text-slate-700 uppercase text-xs tracking-widest px-2 text-center">
+                        {feat.title}
+                      </h3>
+                    </div>
 
-                   </div>
+                    {/* DORSO */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white shadow-2xl rounded-3xl border border-[#2553A8]/20 [backface-visibility:hidden] [transform:rotateX(180deg)]">
+                      <h3 className="font-black text-[#2553A8] uppercase text-xs tracking-widest mb-3 leading-tight text-center">
+                        {feat.title}
+                      </h3>
+                      <p className="text-slate-500 text-[11px] leading-relaxed font-medium text-center">
+                        {feat.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
-
           </div>
         </div>
       </section>
@@ -814,7 +860,7 @@ export const Home: React.FC = () => {
       <section className="space-y-24 py-12">
         <div className="max-w-7xl mx-auto px-4 space-y-16">
           <div className="text-center space-y-4">
-            <span className="text-(--brand-yellow) font-black uppercase tracking-[0.3em] text-xs">
+            <span className="bg-yellow-100 text-[#013189] px-3 py-1 rounded-full font-black uppercase tracking-[0.3em] text-xs">
               Mercados Atendidos
             </span>
             <h2 className="text-4xl md:text-5xl font-black text-[#2553A8] uppercase tracking-tighter">
@@ -830,15 +876,13 @@ export const Home: React.FC = () => {
                 className="bg-white p-8 rounded-[2.5rem] border border-slate-100 flex items-start gap-6 group hover:shadow-xl transition-all"
               >
                 <div className="size-16 bg-slate-50 rounded-2xl flex items-center justify-center text-[#2553A8] group-hover:bg-[#2553A8] group-hover:text-white transition-all shrink-0">
-                  <span className="material-symbols-outlined text-6xl font-black">
-                    {sector.icon}
-                  </span>
+                  <sector.icon className="size-10" />
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-lg font-black text-[#2553A8] uppercase leading-tight">
+                  <h3 className="text-lg font-black text-[#2553A8] uppercase leading-tight">
                     {sector.name}
-                  </h4>
-                  <p className="text-slate-400 font-medium text-sm">
+                  </h3>
+                  <p className="text-slate-500 font-medium text-sm">
                     {sector.desc}
                   </p>
                 </div>
@@ -850,7 +894,7 @@ export const Home: React.FC = () => {
         <div className="bg-slate-50 border-y border-slate-100 py-16">
           <div className="max-w-7xl mx-auto px-4 space-y-12">
             <div className="text-center space-y-2">
-              <span className="text-(--brand-yellow) font-black uppercase tracking-[0.3em] text-[10px]">
+              <span className="bg-yellow-100 text-[#013189] px-3 py-1 rounded-full font-black uppercase tracking-[0.3em] text-[10px]">
                 Confianza Industrial
               </span>
               <h2 className="text-3xl font-black text-[#2553A8] uppercase tracking-tighter">
@@ -872,6 +916,7 @@ export const Home: React.FC = () => {
                     <img
                       src={logoSrc}
                       alt={client.name}
+                      loading="lazy"
                       className="max-h-full max-w-full object-contain grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
                     />
                   </div>
@@ -897,7 +942,7 @@ export const Home: React.FC = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6">
             <a
-              href="https://wa.me/573127536787"
+              href="tel:+573127536787"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-(--brand-yellow) hover:bg-[#D9A404] text-[#2553A8] font-black py-5 px-12 rounded-2xl text-xl shadow-lg active:scale-95 transition-all"

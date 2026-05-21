@@ -1,37 +1,40 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { TEAM } from "../data/constants";
-import { NosotrosHeroCarousel } from "../components/NosotrosHeroCarousel"; // Importamos el nuevo carrusel
+import { TEAM } from "../data/nosotros/nosotros";
+import { NosotrosHeroCarousel } from "../components/NosotrosHeroCarousel";
+import { Eye, Rocket, Handshake, CircleCheck, Lightbulb } from "lucide-react";
+import { MdOutlineVerified } from "react-icons/md";
 
 // Definimos los valores aquí
 const values = [
   {
     t: "Integridad",
     d: "Honestidad radical en cada diagnóstico y cotización.",
-    i: "handshake",
+    i: Handshake,
   },
   {
     t: "Calidad",
     d: "Ofrecemos productos y servicios de la más alta calidad, superando las expectativas de nuestros clientes.",
-    i: "bolt",
+    i: CircleCheck,
   },
   {
     t: "Innovación",
     d: "Siempre buscamos nuevas formas de mejorar y ofrecer soluciones avanzadas.",
-    i: "lightbulb",
+    i: Lightbulb,
   },
   {
     t: "Respaldo",
     d: "Acompañamiento técnico real y garantía efectiva en cada producto y servicio que entregamos.",
-    i: "verified",
+    i: MdOutlineVerified,
   },
 ];
 ---
 
-<Layout title="Nosotros | Compresores del Valle | Expertos en Compresores Industriales"
-  description="Conoce Compresores del Valle, empresa con amplia trayectoria en la venta, mantenimiento y reparación de compresores industriales. Atención desde Cali con cobertura nacional.">
+<Layout
+  title="Nosotros | Compresores del Valle | Expertos en Compresores Industriales"
+  description="Conoce Compresores del Valle, empresa con amplia trayectoria en la venta, mantenimiento y reparación de compresores industriales. Atención desde Cali con cobertura nacional."
+>
   <div class="space-y-32 pb-24 pt-12">
-    
     <!-- HEADER SECTION -->
     <header
       class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center"
@@ -39,14 +42,15 @@ const values = [
       <div class="space-y-8">
         <div class="space-y-4">
           <span
-            class="text-(--brand-yellow) font-black uppercase tracking-[0.3em] text-sm"
+            class="bg-yellow-100 text-[#013189] px-3 py-1 rounded-full font-black uppercase tracking-[0.3em] text-sm"
             >Trayectoria en el Valle</span
           >
           <h1
             class="text-6xl md:text-8xl font-black text-(--brand-blue) uppercase tracking-tighter"
           >
-            POTENCIA <br/>QUE MUEVE <br/><span class="text-(--brand-yellow)"
-              >EL PAÍS</span
+            POTENCIA <br />QUE MUEVE <br /><span
+              class="text-(--brand-yellow) drop-shadow-[0_2px_2px_rgba(0,0,0,0.35)]"
+              style="-webkit-text-stroke: 2px #013189;">EL PAÍS</span
             >
           </h1>
         </div>
@@ -59,7 +63,7 @@ const values = [
           <div>
             <p class="text-5xl font-black text-(--brand-blue)">25+</p>
             <p
-              class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2"
+              class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-2"
             >
               Años Líderes
             </p>
@@ -67,7 +71,7 @@ const values = [
           <div>
             <p class="text-5xl font-black text-(--brand-blue)">500+</p>
             <p
-              class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2"
+              class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-2"
             >
               Clientes Activos
             </p>
@@ -76,15 +80,11 @@ const values = [
       </div>
 
       <div class="relative">
-        <!-- El fondo decorativo rotado se queda igual -->
         <div
           class="absolute inset-0 bg-(--brand-blue) rounded-[5rem] rotate-3 translate-x-4 opacity-10"
         >
         </div>
-        
-        <!-- AQUI REEMPLAZAMOS LA IMG POR EL CARRUSEL -->
-        <!-- client:load es necesario para que las imagenes cambien -->
-        <NosotrosHeroCarousel client:load />
+        <NosotrosHeroCarousel client:idle />
       </div>
     </header>
 
@@ -97,10 +97,7 @@ const values = [
           <div
             class="size-20 rounded-3xl bg-blue-50 flex items-center justify-center text-(--brand-blue) group-hover:scale-110 transition-transform"
           >
-            <!-- Agregué la clase icon-fix -->
-            <span class="material-symbols-outlined icon-fix"
-              >rocket_launch</span
-            >
+            <Rocket className="size-10" />
           </div>
           <h2
             class="text-4xl font-black text-(--brand-blue) uppercase tracking-tight"
@@ -108,10 +105,13 @@ const values = [
             Misión
           </h2>
           <p class="text-slate-500 text-lg leading-relaxed italic">
-            "En Compresores del Valle diseñamos, suministramos e implementamos soluciones técnicas especializadas 
-            en sistemas de aire comprimido y herramientas neumáticas, integrando comercialización, mantenimiento industrial, 
-            reparación y ensamble bajo estándares rigurosos de calidad, eficiencia operativa y confiabilidad técnica.<br><br>
-            Impulsamos la productividad de nuestros clientes mediante asesoría experta, soporte técnico especializado y mejora continua en cada proceso."
+            "En Compresores del Valle diseñamos, suministramos e implementamos
+            soluciones técnicas especializadas en sistemas de aire comprimido y
+            herramientas neumáticas, integrando comercialización, mantenimiento
+            industrial, reparación y ensamble bajo estándares rigurosos de
+            calidad, eficiencia operativa y confiabilidad técnica.<br /><br />
+            Impulsamos la productividad de nuestros clientes mediante asesoría experta,
+            soporte técnico especializado y mejora continua en cada proceso."
           </p>
         </div>
         <div
@@ -120,8 +120,7 @@ const values = [
           <div
             class="size-20 rounded-3xl bg-yellow-50 flex items-center justify-center text-(--brand-yellow) group-hover:scale-110 transition-transform"
           >
-             <!-- Agregué la clase icon-fix -->
-            <span class="material-symbols-outlined icon-fix">visibility</span>
+            <Eye className="size-10" />
           </div>
           <h2
             class="text-4xl font-black text-(--brand-blue) uppercase tracking-tight"
@@ -129,10 +128,12 @@ const values = [
             Visión
           </h2>
           <p class="text-slate-500 text-lg leading-relaxed italic">
-            "Ser una empresa referente a nivel nacional en soluciones integrales de aire comprimido, 
-            reconocida por su liderazgo técnico, innovación tecnológica y excelencia en el servicio especializado.<br><br>
-            Nos proyectamos como una organización sólida, competitiva y en constante evolución, comprometida 
-            con el desarrollo industrial y el crecimiento sostenible del sector."
+            "Ser una empresa referente a nivel nacional en soluciones integrales
+            de aire comprimido, reconocida por su liderazgo técnico, innovación
+            tecnológica y excelencia en el servicio especializado.<br /><br />
+            Nos proyectamos como una organización sólida, competitiva y en constante
+            evolución, comprometida con el desarrollo industrial y el crecimiento
+            sostenible del sector."
           </p>
         </div>
       </div>
@@ -150,8 +151,7 @@ const values = [
           values.map((v) => (
             <div class="space-y-6">
               <div class="size-24 rounded-full bg-slate-100 mx-auto flex items-center justify-center text-(--brand-blue)">
-                 
-                <span class="material-symbols-outlined icon-fix">{v.i}</span>
+                <v.i className="size-12" />
               </div>
               <h3 class="text-2xl font-black uppercase text-(--brand-blue)">
                 {v.t}
@@ -171,31 +171,34 @@ const values = [
             Nuestro Equipo
           </h2>
           <p class="text-blue-100 text-xl max-w-2xl mx-auto">
-            Contamos con personal técnico altamente capacitado, con amplia experiencia en mantenimiento, 
-            reparación e instalación de sistemas de aire comprimido. Trabajamos de manera coordinada para ofrecer soluciones eficientes y confiables a nuestros clientes..
+            Contamos con personal técnico altamente capacitado, con amplia
+            experiencia en mantenimiento, reparación e instalación de sistemas
+            de aire comprimido. Trabajamos de manera coordinada para ofrecer
+            soluciones eficientes y confiables a nuestros clientes..
           </p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
           {
             TEAM.map((p) => {
-              const ImageSrc = typeof p.image === 'string' ? p.image : p.image.src;
+              const ImageSrc =
+                typeof p.image === "string" ? p.image : p.image.src;
               return (
-              <div class="space-y-6 group">
-                <div class="aspect-4/5 rounded-[3rem] overflow-hidden shadow-2xl">
-                  <img
-                    src={ImageSrc}
-                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
-                    alt={p.name}
-                    loading="lazy"
-                  />
+                <div class="space-y-6 group">
+                  <div class="aspect-4/5 rounded-[3rem] overflow-hidden shadow-2xl">
+                    <img
+                      src={ImageSrc}
+                      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                      alt={p.name}
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <h3 class="text-2xl font-black">{p.name}</h3>
+                    <span class="text-(--brand-yellow) font-black uppercase tracking-[0.2em] text-xs">
+                      {p.role}
+                    </span>
+                  </div>
                 </div>
-                <div class="space-y-2">
-                  <h3 class="text-2xl font-black">{p.name}</h3>
-                  <span class="text-(--brand-yellow) font-black uppercase tracking-[0.2em] text-xs">
-                    {p.role}
-                  </span>
-                </div>
-              </div>
               );
             })
           }

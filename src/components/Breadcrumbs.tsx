@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { PRODUCTS } from "../data/constants";
+import { PRODUCTS } from "../data/products/products";
+import { House } from "lucide-react";
 
 interface Crumb {
   label: string;
   path: string | null;
-  icon?: string;
+  icon?: React.ElementType;
 }
 
 export const Breadcrumbs: React.FC = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<Crumb[]>([]);
-  const [isVisible, setIsVisible] = useState(false);
 
   const calculateBreadcrumbs = () => {
     const pathname = window.location.pathname;
@@ -17,7 +17,7 @@ export const Breadcrumbs: React.FC = () => {
 
     // Si estamos en home y no hay búsqueda, ocultar
     if (pathname === "/" && !search) {
-      setIsVisible(false);
+      setBreadcrumbs([]);
       return;
     }
 
@@ -31,7 +31,7 @@ export const Breadcrumbs: React.FC = () => {
     const crumbs: Crumb[] = [];
 
     // Nivel 0: Inicio
-    crumbs.push({ label: "Inicio", path: "/", icon: "home" });
+    crumbs.push({ label: "Inicio", path: "/", icon: House });
 
     // Lógica de Rutas
     if (pathnames[0] === "productos" || pathnames[0] === "producto") {
@@ -62,39 +62,46 @@ export const Breadcrumbs: React.FC = () => {
       }
       // CASO B: Es el Catálogo General (Filtros en la URL)
       else {
-  const isFiltered = catParam || subParam || qParam;
-  crumbs.push({ label: 'Productos', path: isFiltered ? '/productos' : null });
+        const isFiltered = catParam || subParam || qParam;
+        crumbs.push({
+          label: "Productos",
+          path: isFiltered ? "/productos" : null,
+        });
 
-  // 1. Lógica de Categoría
-  let effectiveCat = catParam;
-  // Si no hay cat en URL pero sí sub, buscamos qué categoría le corresponde en los datos
-  if (!effectiveCat && subParam) {
-    const found = PRODUCTS.find(p => p.subCategory === subParam);
-    if (found) effectiveCat = found.category;
-  }
+        // 1. Lógica de Categoría
+        let effectiveCat = catParam;
+        // Si no hay cat en URL pero sí sub, buscamos qué categoría le corresponde en los datos
+        if (!effectiveCat && subParam) {
+          const found = PRODUCTS.find((p) => p.subCategory === subParam);
+          if (found) effectiveCat = found.category;
+        }
 
-  if (effectiveCat && effectiveCat !== 'all') {
-    // Si hay algo después de la categoría (sub o búsqueda), la categoría lleva link
-    const hasNextLevel = subParam || qParam;
-    crumbs.push({ 
-      label: effectiveCat, 
-      path: hasNextLevel ? `/productos?cat=${encodeURIComponent(effectiveCat)}` : null 
-    });
-  }
+        if (effectiveCat && effectiveCat !== "all") {
+          // Si hay algo después de la categoría (sub o búsqueda), la categoría lleva link
+          const hasNextLevel = subParam || qParam;
+          crumbs.push({
+            label: effectiveCat,
+            path: hasNextLevel
+              ? `/productos?cat=${encodeURIComponent(effectiveCat)}`
+              : null,
+          });
+        }
 
-  // 2. Lógica de Subcategoría
-  if (subParam && subParam !== 'all') {
-    crumbs.push({ 
-      label: subParam, 
-      path: qParam ? `/productos?cat=${encodeURIComponent(effectiveCat || '')}&sub=${encodeURIComponent(subParam)}` : null 
-    });
-  }
+        // 2. Lógica de Subcategoría
+        if (subParam && subParam !== "all") {
+          crumbs.push({
+            label: subParam,
+            path: qParam
+              ? `/productos?cat=${encodeURIComponent(effectiveCat || "")}&sub=${encodeURIComponent(subParam)}`
+              : null,
+          });
+        }
 
-  // 3. Lógica de Búsqueda
-  if (qParam) {
-    crumbs.push({ label: `Búsqueda: ${qParam}`, path: null });
-  }
-}
+        // 3. Lógica de Búsqueda
+        if (qParam) {
+          crumbs.push({ label: `Búsqueda: ${qParam}`, path: null });
+        }
+      }
     }
     // Caso: Páginas Estáticas
     else if (pathnames.length > 0) {
@@ -105,7 +112,6 @@ export const Breadcrumbs: React.FC = () => {
     }
 
     setBreadcrumbs(crumbs);
-    setIsVisible(true);
   };
 
   useEffect(() => {
@@ -128,40 +134,55 @@ export const Breadcrumbs: React.FC = () => {
     };
   }, []);
 
-  if (!isVisible) return null;
+  if (breadcrumbs.length === 0) return null;
 
   return (
-    <nav className="bg-white border-b border-slate-50 py-3 px-4 shadow-sm relative z-40 overflow-hidden">
-      <div className="max-w-7xl mx-auto flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] overflow-x-auto no-scrollbar scroll-smooth">
+    <nav
+      aria-label="Breadcrumb"
+      className="bg-white border-b border-slate-50 py-3 px-4 shadow-sm relative z-40 overflow-hidden"
+    >
+      <div
+        itemScope
+        itemType="https://schema.org/BreadcrumbList"
+        className="max-w-7xl mx-auto flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] overflow-x-auto no-scrollbar scroll-smooth"
+      >
         {breadcrumbs.map((crumb, index) => {
           const isLast = index === breadcrumbs.length - 1;
 
           return (
-            <div key={index} className="flex items-center shrink-0">
+            <div
+              key={index}
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+              className="flex items-center shrink-0"
+            >
+              <meta itemProp="position" content={(index + 1).toString()} />
               {index > 0 && (
-                <span className="text-slate-300 shrink-0 mx-1">/</span>
+                <span
+                  className="text-slate-300 shrink-0 mx-1"
+                  aria-hidden="true"
+                >
+                  /
+                </span>
               )}
 
               {!crumb.path || isLast ? (
-                <span className="text-[#2553A8] flex items-center gap-1 shrink-0 animate-in fade-in slide-in-from-left-1 duration-300">
-                  {crumb.icon && (
-                    <span className="material-symbols-outlined text-[12px]">
-                      {crumb.icon}
-                    </span>
-                  )}
+                <span
+                  itemProp="name"
+                  className="text-[#2553A8] flex items-center gap-1 shrink-0 animate-in fade-in slide-in-from-left-1 duration-300"
+                >
+                  {crumb.icon && <crumb.icon className="text-[12px]" />}
                   {crumb.label}
                 </span>
               ) : (
                 <a
+                  itemProp="item"
                   href={crumb.path}
-                  className="text-slate-400 hover:text-[#2553A8] transition-colors flex items-center gap-1 shrink-0"
+                  className="text-slate-500 hover:text-[#2553A8] transition-colors flex items-center gap-1 shrink-0"
                 >
-                  {crumb.icon && (
-                    <span className="material-symbols-outlined text-[12px]">
-                      {crumb.icon}
-                    </span>
-                  )}
-                  {crumb.label}
+                  {crumb.icon && <crumb.icon className="text-[12px]" />}
+                  <span itemProp="name">{crumb.label}</span>
                 </a>
               )}
             </div>
