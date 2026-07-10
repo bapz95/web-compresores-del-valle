@@ -1,12 +1,12 @@
 import { getImage } from "../shared/images";
-import { ServiceCategory, type ServiceGalleries, type ServiceHeaderPhotos, type ServiceItem } from "../types";
 import {
-  Wrench,
-} from "lucide-react";
-import {
-  GiPipes,
-  GiFuelTank,
-} from "react-icons/gi";
+  ServiceCategory,
+  type ServiceGalleries,
+  type ServiceHeaderPhotos,
+  type ServiceItem,
+} from "../types";
+import { Wrench } from "lucide-react";
+import { GiPipes, GiFuelTank } from "react-icons/gi";
 import { MdOutlineLocalCarWash } from "react-icons/md";
 import { GoZap } from "react-icons/go";
 import { PiSprayBottle } from "react-icons/pi";
@@ -172,9 +172,8 @@ export const serviceGalleries: ServiceGalleries = {
   ],
   //Fabricación Tanques
   "fabricacion-tanques": [
-    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800",
-    "https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&q=80&w=800",
-    "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800",
+    getImage("servicios/Soldadura/soldadura-tanque.webp"),
+    getImage("servicios/Soldadura/soldadura.webp"),
   ],
   //Pintura
   "pintura-electrostatica": [

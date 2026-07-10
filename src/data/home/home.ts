@@ -1,11 +1,14 @@
 import { getImage } from "../../data/shared/images";
-import type { CategoryItem, Clientes, compressorType, Feature, HeroSlide, Sector, SuccessStory } from "../types";
-import {
-  Wrench,
-  Hospital,
-  Anvil,
-  PackageOpen
-} from "lucide-react";
+import type {
+  CategoryItem,
+  Clientes,
+  compressorType,
+  Feature,
+  HeroSlide,
+  Sector,
+  SuccessStory,
+} from "../types";
+import { Wrench, Hospital, Anvil, PackageOpen } from "lucide-react";
 import { MdAgriculture, MdFastfood } from "react-icons/md";
 import { FaMedal, FaStar, FaShieldAlt } from "react-icons/fa";
 import { FcAutomotive } from "react-icons/fc";
@@ -52,8 +55,7 @@ export const compressorTypes: compressorType[] = [
     title: "Compresores de Tornillo",
     description:
       "Rendimiento continuo y eficiencia energética para procesos industriales exigentes.",
-    image:
-      getImage("home/seccion-categorias/compresores-tornillo-home.webp"),
+    image: getImage("home/seccion-categorias/compresores-tornillo-home.webp"),
     link: "/productos?cat=Compresores&sub=Compresores%20de%20Tornillo",
   },
   {
@@ -78,7 +80,7 @@ export const whyChooseUsFeatures: Feature[] = [
     title: "25+ Años de Experiencia",
     description:
       "Un cuarto de siglo innovando en sistemas de aire comprimido a nivel nacional, ofreciendo soluciones a la medida para la industria, comercio y hogar.",
-    icon: FaMedal, 
+    icon: FaMedal,
   },
   {
     title: "Calidad Internacional",
@@ -170,8 +172,7 @@ export const slides: HeroSlide[] = [
     subtitle: "Mantenimiento y Reparación de compresores industriales",
     description:
       "Diagnóstico, mantenimiento preventivo y correctivo, y reparación de compresores industriales para garantizar lacontinuidad operativa.",
-    image:
-      getImage("home/hero-slide/reparacion-compresor-tornillo.webp"),
+    image: getImage("home/hero-slide/reparacion-compresor-tornillo.webp"),
     primaryCta: {
       text: "VER SERVICIOS TÉCNICOS",
       link: "/servicios",
@@ -186,8 +187,7 @@ export const slides: HeroSlide[] = [
     subtitle: "Más de 25 años respaldando la industria",
     description:
       "Acompañamos a la industria con soporte técnico confiable, repuestos certificados y atención especializada para garantizar la continuidad de sus procesos productivos.",
-    image:
-      "https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&q=80&w=1080",
+    image: getImage("home/hero-slide/compresores-1hp-aireseco.webp"),
     primaryCta: {
       text: "CONOCE NUESTRA EMPRESA",
       link: "/nosotros",
@@ -227,7 +227,5 @@ export const sectors: Sector[] = [
     desc: "Corte y Soldadura",
   },
 
-  { name: "Logística", 
-    icon: PackageOpen, 
-    desc: "Empaque y Distribución" },
+  { name: "Logística", icon: PackageOpen, desc: "Empaque y Distribución" },
 ];

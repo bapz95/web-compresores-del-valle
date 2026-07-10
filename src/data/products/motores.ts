@@ -1,7 +1,7 @@
 import { getImage } from "../shared/images";
 import { Category, SubCategory, type Product } from "../types";
 export const MOTORES: Product[] = [
-    //TODO faltan precios
+  //TODO faltan precio 1800
   {
     id: "motor-monofasico-1hp-110-220v",
     name: "Motor Monofásico 1 HP (110-220 V)",
@@ -19,7 +19,7 @@ export const MOTORES: Product[] = [
     ],
     variantType: "dropdown",
     variants: [
-      { name: "1800 RPM", price: 350000 },
+      { name: "1800 RPM", price: 0 },
       { name: "3600 RPM", price: 1500000 },
     ],
     specs: {
@@ -31,7 +31,6 @@ export const MOTORES: Product[] = [
     },
   },
 
-  //TODO faltan precios
   {
     id: "motor-monofasico-1-5hp-110-220v",
     name: "Motor Monofásico 1.5 HP (110-220 V)",
@@ -49,8 +48,8 @@ export const MOTORES: Product[] = [
     ],
     variantType: "dropdown",
     variants: [
-      { name: "1800 RPM", price: 350000 },
-      { name: "3600 RPM", price: 1500000 },
+      { name: "1800 RPM", price: 1800000 },
+      { name: "3600 RPM", price: 1400000 },
     ],
     specs: {
       Potencia: "1.5 HP",
@@ -61,7 +60,7 @@ export const MOTORES: Product[] = [
     },
   },
 
-  //TODO faltan precios
+  //TODO faltan precio 1800
   {
     id: "motor-monofasico-2hp-110-220v",
     name: "Motor Monofásico 2 HP (110-220 V)",
@@ -79,8 +78,8 @@ export const MOTORES: Product[] = [
     ],
     variantType: "dropdown",
     variants: [
-      { name: "1800 RPM", price: 350000 },
-      { name: "3600 RPM", price: 1500000 },
+      { name: "1800 RPM", price: 0 },
+      { name: "3600 RPM", price: 1800000 },
     ],
     specs: {
       Potencia: "2 HP",
@@ -91,7 +90,6 @@ export const MOTORES: Product[] = [
     },
   },
 
-  //TODO faltan precios
   {
     id: "motor-monofasico-3hp-110-220v",
     name: "Motor Monofásico 3 HP (110-220 V)",
@@ -109,8 +107,8 @@ export const MOTORES: Product[] = [
     ],
     variantType: "dropdown",
     variants: [
-      { name: "1800 RPM", price: 350000 },
-      { name: "3600 RPM", price: 1500000 },
+      { name: "1800 RPM", price: 3200000 },
+      { name: "3600 RPM", price: 2100000 },
     ],
     specs: {
       Potencia: "3 HP",
@@ -121,7 +119,6 @@ export const MOTORES: Product[] = [
     },
   },
 
-  //TODO faltan precios
   {
     id: "motor-bifasico-5hp-220v",
     name: "Motor Bifásico 5 HP (220 V)",
@@ -139,18 +136,18 @@ export const MOTORES: Product[] = [
     ],
     variantType: "dropdown",
     variants: [
-      { name: "1800 RPM", price: 350000 },
-      { name: "3600 RPM", price: 1500000 },
+      { name: "1750 RPM", price: 4800000 },
+      { name: "3600 RPM", price: 4200000 },
     ],
     specs: {
       Potencia: "5 HP",
       Fases: "2",
       "Corriente nominal": "220V",
-      RPM: "1800 - 3600",
+      RPM: "1750 - 3600",
       Eje: "5/8 (16 mm)",
     },
   },
-  //TODO faltan precios.
+
   {
     id: "motor-bifasico-7.5hp-220v",
     name: "Motor Bifásico 7.5 HP (220 V)",
@@ -168,21 +165,21 @@ export const MOTORES: Product[] = [
     ],
     variantType: "dropdown",
     variants: [
-      { name: "1800 RPM", price: 350000 },
-      { name: "3600 RPM", price: 1500000 },
+      { name: "1700 RPM", price: 550000 },
+      { name: "3600 RPM", price: 5200000 },
     ],
     specs: {
       Potencia: "7.5 HP",
       Fases: "2",
       "Corriente nominal": "220V",
-      RPM: "1800 - 3600",
+      RPM: "1700 - 3600",
       Eje: "5/8 (16 mm)",
     },
   },
-  //TODO faltan precios
+
   {
-    id: "motor-bifasico-10hp-220v",
-    name: "Motor Bifásico 10 HP (220 V)",
+    id: "motor-monofasico-10hp-220v",
+    name: "Motor Monofásico 10 HP (220 V)",
     category: Category.MOTORES,
     subCategory: SubCategory.ELECTRICOS,
     brand: "weg",
@@ -197,10 +194,7 @@ export const MOTORES: Product[] = [
       getImage("productos/motores/motor-bifasico-10hp-costado.webp"),
     ],
     variantType: "dropdown",
-    variants: [
-      { name: "1800 RPM", price: 350000 },
-      { name: "3600 RPM", price: 1500000 },
-    ],
+    variants: [{ name: "1750 RPM", price: 6800000 }],
     specs: {
       Potencia: "10 HP (7,5 kW)",
       "Número de polos": "4",
@@ -208,11 +202,11 @@ export const MOTORES: Product[] = [
       "Corriente nominal": "44,5-40,8 / 20,4 A",
       "Corriente de arranque": "298-273 / 137 A",
       Frecuencia: "60 Hz",
-      Velocidad: "1740 RPM / 3600 RPM",
+      Velocidad: "1750 RPM",
       Eficiencia: "84 %",
       "Servicio continuo (S1)": "",
       "Nivel de protección": "IP55",
       "Armazón de hierro": "",
     },
   },
-]
+];
