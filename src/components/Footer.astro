@@ -5,24 +5,11 @@ const currentYear = new Date().getFullYear();
 import mastercard from "../assets/branding/mastercard.png";
 import visa from "../assets/branding/visa.png";
 import nequi from "../assets/branding/nequi.png";
-import { 
-  FaWhatsapp,
-  FaFacebookF,
-  FaInstagram,
-  FaTiktok 
-} from "react-icons/fa";
-import {
-  Mail,
-  Phone,
-  MapPin
-} from "lucide-react";
+import { FaWhatsapp, FaFacebookF, FaInstagram, FaTiktok } from "react-icons/fa";
+import { Mail, Phone, MapPin } from "lucide-react";
 ---
 
-<footer
-  class="bg-[#035aa6] text-white pt-16 pb-8 px-6 mt-20"
-  itemscope
-  itemtype="https://schema.org/LocalBusiness"
->
+<footer class="bg-[#035aa6] text-white pt-16 pb-8 px-6 mt-20">
   <div
     class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
   >
@@ -44,29 +31,33 @@ import {
       </h2>
       <ul class="space-y-4 text-sm text-white/80">
         <li>
-          <a href="/" class="hover:text-(--brand-yellow) transition-colors"
-            >Inicio</a
-          >
+          <a href="/" class="hover:text-(--brand-yellow) transition-colors">
+            Inicio
+          </a>
         </li>
         <li>
           <a
             href="/productos"
             class="hover:text-(--brand-yellow) transition-colors"
-            >Compresores y Repuestos</a
           >
+            Compresores y Repuestos
+          </a>
         </li>
         <li>
           <a
             href="/servicios"
             class="hover:text-(--brand-yellow) transition-colors"
-            >Mantenimiento y Servicio Técnico</a
           >
+            Mantenimiento y Servicio Técnico
+          </a>
         </li>
         <li>
           <a
             href="/nosotros"
-            class="hover:text-(--brand-yellow) transition-colors">Nosotros</a
+            class="hover:text-(--brand-yellow) transition-colors"
           >
+            Nosotros
+          </a>
         </li>
       </ul>
     </div>
@@ -77,48 +68,50 @@ import {
       >
         Contacto
       </h2>
+
       <ul class="space-y-4 text-sm text-white/80">
         <li class="flex items-start gap-3">
-          <Phone size={20} className="text-(--brand-yellow) transition-colors" />
+          <Phone
+            size={20}
+            className="text-(--brand-yellow) transition-colors"
+          />
           <a
             href="tel:+573127536787"
             target="_blank"
             rel="noopener noreferrer"
             class="hover:text-(--brand-yellow) transition-colors"
-            itemprop="telephone"
           >
             312 753 6787
           </a>
         </li>
+
         <li class="flex items-start gap-3">
-          <Phone size={20} className="text-(--brand-yellow) transition-colors" />
+          <Phone
+            size={20}
+            className="text-(--brand-yellow) transition-colors"
+          />
           <a
             href="tel:+573174675905"
             target="_blank"
             rel="noopener noreferrer"
             class="hover:text-(--brand-yellow) transition-colors"
-            itemprop="telephone"
           >
             317 467 5905
           </a>
         </li>
-        <li
-          class="flex items-start gap-3"
-          itemprop="address"
-          itemscope
-          itemtype="https://schema.org/PostalAddress"
-        >
+
+        <li class="flex items-start gap-3">
           <MapPin size={20} className="text-(--brand-yellow) shrink-0" />
           <div class="flex flex-col md:flex-row md:gap-4 leading-tight">
-            <span itemprop="streetAddress">Cll 34 # 4b-30 Barrio Porvenir</span>
+            <span>Cll 34 # 4b-30 Barrio Porvenir</span>
             <span class="hidden md:block">|</span>
-            {/* Separador visual solo en PC */}
             <span>
-              <span itemprop="addressLocality">Cali</span>,
-              <span itemprop="addressRegion">Valle del Cauca</span>
+              <span>Cali</span>,
+              <span> Valle del Cauca</span>
             </span>
           </div>
         </li>
+
         <li class="flex items-start gap-3">
           <Mail size={20} className="text-(--brand-yellow) shrink-0" />
           <a
@@ -126,11 +119,11 @@ import {
             target="_blank"
             rel="noopener noreferrer"
             class="hover:text-(--brand-yellow) transition-colors"
-            itemprop="email"
           >
             ventascompresoresdelvalle@hotmail.com
           </a>
         </li>
+
         <li class="flex items-start gap-3">
           <Mail size={20} className="text-(--brand-yellow)" />
           <a
@@ -138,7 +131,6 @@ import {
             target="_blank"
             rel="noopener noreferrer"
             class="hover:text-(--brand-yellow) transition-colors"
-            itemprop="email"
           >
             compresoresdelvallesas@hotmail.com
           </a>
@@ -152,8 +144,8 @@ import {
       >
         Síguenos
       </h2>
+
       <div class="flex flex-wrap gap-4">
-        {/* WhatsApp */}
         <a
           href="https://wa.me/573127536787"
           target="_blank"
@@ -163,10 +155,9 @@ import {
         >
           <FaWhatsapp
             className="size-5 text-white group-hover:text-(--wa-green) transition-all duration-300 group-hover:scale-110"
-          >
+          />
         </a>
 
-        {/* Facebook */}
         <a
           href="https://www.facebook.com/compresores.delvalle.3"
           target="_blank"
@@ -179,7 +170,6 @@ import {
           />
         </a>
 
-        {/* Instagram */}
         <a
           href="https://www.instagram.com/compresoresdelvallesas"
           target="_blank"
@@ -192,7 +182,6 @@ import {
           />
         </a>
 
-        {/* TikTok */}
         <a
           href="https://www.tiktok.com/@compresoresdelvallesas"
           target="_blank"
@@ -213,9 +202,9 @@ import {
   >
     <p class="text-xs text-white/80">
       © {currentYear}
-      <span itemprop="name">Compresores del Valle S.A.S.</span> Todos los derechos
-      reservados.
+      <span>Compresores del Valle S.A.S.</span> Todos los derechos reservados.
     </p>
+
     <div class="flex items-center justify-center gap-6">
       <Image
         alt="Mastercard"
