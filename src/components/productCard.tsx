@@ -81,11 +81,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   // --- VISTA LISTA ---
   if (viewMode === "list") {
     return (
-      <article
-        className="group bg-white rounded-4xl md:rounded-4xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row h-auto relative"
-        itemScope
-        itemType="https://schema.org/Product"
-      >
+      <article className="group bg-white rounded-4xl md:rounded-4xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row h-auto relative">
         {/* Etiquetas Esquina Superior Derecha (Lista) - Apiladas */}
         <div className="absolute top-4 right-4 z-20 flex md:flex-row flex-col gap-1.5 items-end">
           {product.brand && (
@@ -112,7 +108,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <img
             src={imgSrc}
             alt={product.name}
-            itemProp="image"
             className={`w-auto h-full max-h-48 object-contain mix-blend-multiply transition-all duration-700 ease-in-out ${hoverImgSrc ? "group-hover:opacity-0" : "group-hover:scale-110"}`}
             loading="lazy"
           />
@@ -122,7 +117,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <img
                 src={hoverImgSrc}
                 alt={`${product.name} segunda vista técnica`}
-                itemProp="image"
                 className="w-auto h-full max-h-48 object-contain mix-blend-multiply scale-100 transition-transform duration-700 ease-out group-hover:scale-[1.08] group-hover:duration-[2000ms]"
                 loading="lazy"
               />
@@ -135,16 +129,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1 block">
               {product.category}
             </span>
-            <h2
-              className="font-black text-[#2553A8] text-lg group-hover:text-[#F2B705] transition-colors uppercase leading-tight"
-              itemProp="name"
-            >
+            <h2 className="font-black text-[#2553A8] text-lg group-hover:text-[#F2B705] transition-colors uppercase leading-tight">
               <a href={`/producto/${product.id}`}>{product.name}</a>
             </h2>
-            <p
-              className="text-slate-600 text-xs mt-2 line-clamp-2 leading-relaxed"
-              itemProp="description"
-            >
+            <p className="text-slate-600 text-xs mt-2 line-clamp-2 leading-relaxed">
               {product.description}
             </p>
 
@@ -168,20 +156,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           </div>
 
-          <div
-            className="flex items-center justify-between mt-3"
-            itemProp="offers"
-            itemType="https://schema.org/Offer"
-          >
+          <div className="flex items-center justify-between mt-3">
             <div className="space-y-0.5">
-              <meta
-                itemProp="price"
-                content={(hasPromo
-                  ? product.promoPrice
-                  : displayPrice
-                )?.toString()}
-              />
-              <meta itemProp="priceCurrency" content="COP" />
               <p className="text-[7px] font-black text-slate-500 uppercase tracking-widest">
                 {isDropdown ? "PRECIO DESDE" : "PRECIO"}
               </p>
@@ -239,11 +215,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   // --- VISTA CUADRÍCULA (GRID) ---
   return (
-    <article
-      className="group bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden hover:shadow-2xl transition-all duration-500 flex flex-col h-full hover:-translate-y-1 relative"
-      itemScope
-      itemType="https://schema.org/Product"
-    >
+    <article className="group bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden hover:shadow-2xl transition-all duration-500 flex flex-col h-full hover:-translate-y-1 relative">
       {/* Etiqueta Oferta (Derecha) */}
       <PromoBadge />
 
@@ -252,7 +224,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <img
           src={imgSrc}
           alt={product.name}
-          itemProp="image"
           className={`w-full h-full object-contain mix-blend-multiply transition-all duration-700 ease-in-out ${hoverImgSrc ? "group-hover:opacity-0" : "group-hover:scale-110"}`}
           loading="lazy"
         />
@@ -263,7 +234,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <img
               src={hoverImgSrc}
               alt={`${product.name} segunda vista técnica`}
-              itemProp="image"
               className="w-full h-full object-contain mix-blend-multiply scale-100 transition-transform duration-700 ease-out group-hover:scale-[1.08] group-hover:duration-[2000ms]"
               loading="lazy"
             />
@@ -284,16 +254,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       <div className="p-6 grow flex flex-col justify-between space-y-3">
         <div>
-          <h2
-            className="font-black text-[#2553A8] text-base group-hover:text-[#F2B705] transition-colors line-clamp-2 leading-tight uppercase mb-2"
-            itemProp="name"
-          >
+          <h2 className="font-black text-[#2553A8] text-base group-hover:text-[#F2B705] transition-colors line-clamp-2 leading-tight uppercase mb-2">
             <a href={`/producto/${product.id}`}>{product.name}</a>
           </h2>
-          <p
-            className="text-slate-500 text-[10px] line-clamp-2 font-medium leading-relaxed"
-            itemProp="description"
-          >
+          <p className="text-slate-500 text-[10px] line-clamp-2 font-medium leading-relaxed">
             {product.description}
           </p>
         </div>
@@ -304,14 +268,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         <div className="pt-2 border-t border-slate-50 flex items-center justify-between mt-auto">
           <div className="space-y-0.5">
-            <meta
-              itemProp="offers"
-              content={(hasPromo
-                ? product.promoPrice
-                : displayPrice
-              )?.toString()}
-            />
-            <meta itemProp="priceCurrency" content="COP" />
             <p className="text-[7px] font-black text-slate-500 uppercase tracking-widest">
               {isDropdown ? "PRECIO DESDE" : "PRECIO"}
             </p>
