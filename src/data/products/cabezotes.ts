@@ -1,7 +1,7 @@
 import { getImage } from "../shared/images";
 import { Category, type Product } from "../types";
 export const CABEZOTES: Product[] = [
-     // Cabezotes 0.5 HP
+  // Cabezotes 0.5 HP
   {
     id: "cabezote-1051",
     name: "Cabezote para Compresor 1051 (1/2 HP)",
@@ -214,7 +214,7 @@ export const CABEZOTES: Product[] = [
     brand: "",
     description:
       "El cabezote TA-65 es una pieza esencial diseñada para el ensamblaje o reemplazo de la unidad de bombeo en compresores de pistón de 3 HP. Su construcción robusta de tres cilindros, integrada con un sistema de válvulas de alta resistencia, garantiza un flujo de aire superior y una durabilidad excepcional bajo condiciones de trabajo constante. Incluye un visor de aceite para facilitar el monitoreo preventivo, convirtiéndose en una opción de alto rendimiento para aplicaciones industriales que aseguran la operatividad total de su taller.",
-    price: 950000,
+    price: 1400000,
     warranty: "1 Año",
     image: getImage("productos/cabezotes/cabezote-compresor-3hp-ta65.webp"),
     images: [
@@ -366,7 +366,7 @@ export const CABEZOTES: Product[] = [
   },
   {
     id: "cabezote-3090-sencillo",
-    name: "Cabezote para Compresor 3080 Sencillo (7.5 HP)",
+    name: "Cabezote para Compresor 3090 Sencillo (7.5 HP)",
     category: Category.CABEZOTES,
     brand: "",
     description:
@@ -530,4 +530,4 @@ export const CABEZOTES: Product[] = [
       Etapas: "2",
     },
   },
-]
+];

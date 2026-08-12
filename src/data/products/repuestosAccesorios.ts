@@ -998,7 +998,7 @@ export const REPUESTOS_ACCESORIOS: Product[] = [
     brand: "",
     description:
       "El presostato o automático trifásico es un componente esencial en sistemas de compresores que permite el control automático de la presión del aire. Su función principal es mantener la presión dentro de los límites seguros, activando o desactivando el compresor según sea necesario.",
-    price: 180000,
+    price: 150000,
     image: getImage(
       "productos/repuestos-accesorios/presostato-automatico-trifasico-1via-boton.webp",
     ),
@@ -1329,7 +1329,7 @@ export const REPUESTOS_ACCESORIOS: Product[] = [
     brand: "",
     description:
       "La válvula antirretorno (o válvula check) es un componente esencial que permite el flujo de aire en un solo sentido: desde el cabezal hacia el tanque de almacenamiento. Su función principal es sellar herméticamente el tanque una vez que el motor se detiene, impidiendo que el aire a presión retorne hacia los pistones o se escape a través del presostato.",
-    price: 35000,
+    price: 80000,
     image: getImage(
       "productos/repuestos-accesorios/valvula-cheque-compresor-aire-seco.webp",
     ),
@@ -1589,7 +1589,7 @@ export const REPUESTOS_ACCESORIOS: Product[] = [
 
   {
     id: "biela-cabezote-casquetes",
-    name: "Biela para Cabezote de Compresor",
+    name: "Biela con casquetes para Cabezote de Compresor",
     category: Category.REPUESTOS_ACCESORIOS,
     brand: "",
     description:
