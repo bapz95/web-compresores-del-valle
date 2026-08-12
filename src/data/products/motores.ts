@@ -165,7 +165,7 @@ export const MOTORES: Product[] = [
     ],
     variantType: "dropdown",
     variants: [
-      { name: "1700 RPM", price: 550000 },
+      { name: "1700 RPM", price: 5500000 },
       { name: "3600 RPM", price: 5200000 },
     ],
     specs: {
