@@ -452,7 +452,7 @@ export const Contact: React.FC = () => {
                   <div className="flex justify-between">
                     <span>Sábados</span>
                     <span className="font-black text-white">
-                      8:00 AM - 3:00 PM
+                      8:00 AM - 01:00 PM
                     </span>
                   </div>
                 </div>

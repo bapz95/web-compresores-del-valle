@@ -755,7 +755,8 @@ export const REPUESTOS_ACCESORIOS: Product[] = [
     name: "Unidad de Mantenimiento de Aire WUFU (unidad FRL)",
     category: Category.REPUESTOS_ACCESORIOS,
     brand: "",
-    description: "Optimice el rendimiento y proteja sus herramientas neumáticas con la unidad de mantenimiento WUFU, una solución eficiente y de gran relación calidad-precio para talleres y centros de servicio. Este sistema modular integra en una sola estación la filtración de impurezas y agua condensada, la regulación precisa de la presión de salida mediante su manómetro incorporado y la dosificación automática de lubricante. Su diseño robusto con vasos protectores transparentes facilita el monitoreo de los niveles, garantizando un suministro de aire limpio y una operación estable y continua en sus trabajos diarios.",
+    description:
+      "Optimice el rendimiento y proteja sus herramientas neumáticas con la unidad de mantenimiento WUFU, una solución eficiente y de gran relación calidad-precio para talleres y centros de servicio. Este sistema modular integra en una sola estación la filtración de impurezas y agua condensada, la regulación precisa de la presión de salida mediante su manómetro incorporado y la dosificación automática de lubricante. Su diseño robusto con vasos protectores transparentes facilita el monitoreo de los niveles, garantizando un suministro de aire limpio y una operación estable y continua en sus trabajos diarios.",
     price: 15000,
     image: getImage(
       "productos/repuestos-accesorios/unidades-mantenimiento-aire-wufu.webp",
@@ -789,7 +790,6 @@ export const REPUESTOS_ACCESORIOS: Product[] = [
           ),
         ],
       },
-      
     ],
     specs: {
       "Medidas de Conexión": "1/4 Mini, 1/4, 1/2 NPT",
@@ -801,7 +801,8 @@ export const REPUESTOS_ACCESORIOS: Product[] = [
     name: "Unidad de Mantenimiento de Aire XMC (unidad FRL)",
     category: Category.REPUESTOS_ACCESORIOS,
     brand: "",
-    description: "Optimice el rendimiento y extienda la vida útil de sus herramientas neumáticas con la unidad de mantenimiento XMC de grado industrial superior. Este sistema modular de alta precisión filtra las impurezas y la condensación de agua del aire comprimido, regula la presión de salida de forma constante mediante su manómetro integrado y dosifica una micro-niebla de aceite automatizada para proteger los componentes mecánicos internos. Fabricada con materiales reforzados de alta resistencia y componentes de máxima durabilidad, la tecnología XMC garantiza un flujo de aire óptimo, limpio y libre de caídas de presión en las aplicaciones de taller y producción más exigentes.",
+    description:
+      "Optimice el rendimiento y extienda la vida útil de sus herramientas neumáticas con la unidad de mantenimiento XMC de grado industrial superior. Este sistema modular de alta precisión filtra las impurezas y la condensación de agua del aire comprimido, regula la presión de salida de forma constante mediante su manómetro integrado y dosifica una micro-niebla de aceite automatizada para proteger los componentes mecánicos internos. Fabricada con materiales reforzados de alta resistencia y componentes de máxima durabilidad, la tecnología XMC garantiza un flujo de aire óptimo, limpio y libre de caídas de presión en las aplicaciones de taller y producción más exigentes.",
     price: 220000,
     image: getImage(
       "productos/repuestos-accesorios/unidades-mantenimiento-aire-xmc.webp",
@@ -817,7 +818,7 @@ export const REPUESTOS_ACCESORIOS: Product[] = [
           ),
         ],
       },
-      
+
       {
         name: "1/2",
         price: 550000,
@@ -827,7 +828,6 @@ export const REPUESTOS_ACCESORIOS: Product[] = [
           ),
         ],
       },
-      
     ],
     specs: {
       "Medidas de Conexión": "1/4 Mini, 1/2 NPT",
@@ -839,7 +839,8 @@ export const REPUESTOS_ACCESORIOS: Product[] = [
     name: "Unidad de Mantenimiento de Aire 1/4 Ferton (unidad FRL)",
     category: Category.REPUESTOS_ACCESORIOS,
     brand: "",
-    description: 'Optimice el funcionamiento de sus equipos neumáticos a escala compacta con la unidad de mantenimiento Ferton con conexión de 1/4". Este sistema compacto de nivel comercial es ideal para regular el flujo en herramientas individuales o talleres pequeños, integrando eficientemente la filtración de partículas y humedad, la regulación de presión mediante su manómetro de alta visibilidad y la inyección precisa de lubricante. Su tamaño estándar de 1/4" permite una instalación directa en líneas de aire livianas, asegurando un suministro limpio, estable y protegido contra el desgaste prematuro sin comprometer espacio en su estación de trabajo.',
+    description:
+      'Optimice el funcionamiento de sus equipos neumáticos a escala compacta con la unidad de mantenimiento Ferton con conexión de 1/4". Este sistema compacto de nivel comercial es ideal para regular el flujo en herramientas individuales o talleres pequeños, integrando eficientemente la filtración de partículas y humedad, la regulación de presión mediante su manómetro de alta visibilidad y la inyección precisa de lubricante. Su tamaño estándar de 1/4" permite una instalación directa en líneas de aire livianas, asegurando un suministro limpio, estable y protegido contra el desgaste prematuro sin comprometer espacio en su estación de trabajo.',
     price: 180000,
     image: getImage(
       "productos/repuestos-accesorios/unidad-mantenimiento-1-4-ferton.webp",

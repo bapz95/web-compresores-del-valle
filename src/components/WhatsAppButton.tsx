@@ -24,7 +24,7 @@ const getAvailabilityColombia = () => {
   const weekdayStart = 7 * 60 + 30; // 7:30
   const weekdayEnd = 18 * 60; // 18:00
   const saturdayStart = 8 * 60; // 8:00
-  const saturdayEnd = 15 * 60; // 15:00
+  const saturdayEnd = 13 * 60; // 13:00
 
   const dayMap: Record<string, number> = {
     Sun: 0,

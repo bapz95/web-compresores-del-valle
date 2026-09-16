@@ -421,7 +421,7 @@ export const COMPRESORES: Product[] = [
   //TODO precio
   {
     id: "compresor-tornillo-5hp",
-    name: "Compresor de Tornillo 5.5 HP",
+    name: "Compresor de Tornillo 5.5 HP incorporado",
     category: Category.COMPRESORES,
     subCategory: SubCategory.TORNILLO,
     brand: "",
@@ -446,6 +446,39 @@ export const COMPRESORES: Product[] = [
       "DB(A)": "60",
       Bar: "8",
       "Capacidad pulmon": "55 gl",
+    },
+  },
+
+  {
+    id: "compresor-tornillo-incorporado-10hp",
+    name: "Compresor de Tornillo 10 HP incorporado",
+    category: Category.COMPRESORES,
+    subCategory: SubCategory.TORNILLO,
+    brand: "",
+    description:
+      "Este sistema industrial optimiza el espacio de trabajo al integrar un compresor de tornillo de alto desempeño, un secador refrigerativo y un tanque pulmón en una sola unidad compacta. Su diseño con cabina acústica reduce drásticamente los niveles de ruido, permitiendo su instalación cerca de los puestos de trabajo, mientras que su tecnología de tornillo garantiza un ciclo de trabajo continuo del 100%. Es la solución ideal para entregar aire limpio, seco y constante sin las interrupciones ni el desgaste de los sistemas tradicionales.",
+    price: 25000000,
+    warranty: "1 Año",
+    image: getImage(
+      "productos/compresores/tornillo/compresor-tornillo-incorporado-10hp.webp",
+    ),
+    images: [
+      getImage("productos/compresores/tornillo/compresor-tornillo-incorporado-10hp.webp"),
+      getImage(
+        "productos/compresores/tornillo/compresor-tornillo-incorporado-10hp-frente.webp",
+      ),
+      getImage(
+        "productos/compresores/tornillo/compresor-tornillo-incorporado-10hp-atras.webp",
+      ),
+    ],
+    specs: {
+      Potencia: "10 HP / 7.5 kW",
+      CFM: "40",
+      Voltaje: "220 trifásico",
+      "L/min": "1300",
+      "DB(A)": "65",
+      Bar: "8",
+      "Capacidad pulmon": "100 gl",
     },
   },
   //TODO precio
