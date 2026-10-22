@@ -1,7 +1,6 @@
 import { getImage } from "../shared/images";
 import { Category, type Product } from "../types";
 export const HERRAMIENTA_HIDRAULICA_NEUMATICA: Product[] = [
-    
   {
     id: "desmontadora-montallantas-semiautomatica-rin-10-24pulgadas",
     name: 'Desmontadora Montallantas Rin 10-24" semiautomática ',
@@ -63,11 +62,11 @@ export const HERRAMIENTA_HIDRAULICA_NEUMATICA: Product[] = [
   },
   {
     id: "rampa-elevador-neumatico",
-    name: "Rampa o elevador neumático 1100 lbs",
+    name: "Rampa o elevador Hidroneumática 1000 lbs Industrial",
     category: Category.HERRAMIENTA_HIDRAULICA_NEUMATICA,
     brand: "",
     description:
-      "Optimice el servicio técnico y la ergonomía de su taller con esta rampa de accionamiento neumático, diseñada para ofrecer una elevación rápida, fluida y sin esfuerzo manual. Con una capacidad de carga de 1100 Lbs, es la plataforma ideal para el mantenimiento profesional de motocicletas, permitiendo alcanzar una altura de trabajo de hasta 800 mm para un acceso total a los componentes mecánicos.",
+      "Optimice el servicio técnico y la ergonomía de su taller con esta rampa de accionamiento hidroneumático, diseñada para ofrecer una elevación rápida, fluida y sin esfuerzo manual. Con una capacidad de carga de 1000 Lbs, es la plataforma ideal para el mantenimiento profesional de motocicletas, permitiendo alcanzar una altura de trabajo de hasta 800 mm para un acceso total a los componentes mecánicos.",
     price: 3800000,
     image: getImage(
       "productos/herramienta-hidraulica-neumatica/rampa-neumatica.webp",
@@ -79,7 +78,7 @@ export const HERRAMIENTA_HIDRAULICA_NEUMATICA: Product[] = [
     ],
     specs: {
       "Acción ": "Neumática",
-      Capacidad: "1100 Lb",
+      Capacidad: "1000 Lb",
       "Altura mínima": "200mm",
       "Altura máxima": "800mm",
       "Peso total": "158.5 Kg",
@@ -398,4 +397,4 @@ export const HERRAMIENTA_HIDRAULICA_NEUMATICA: Product[] = [
       "Peso Neto": "2,9 kg",
     },
   },
-]
+];

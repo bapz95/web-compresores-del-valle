@@ -1,7 +1,7 @@
 import { getImage } from "../shared/images";
 import { Category, SubCategory, type Product } from "../types";
 export const MOTORES: Product[] = [
-  //TODO faltan precio 1800
+  //TODO faltan precio 1800 acomodar
   {
     id: "motor-monofasico-1hp-110-220v",
     name: "Motor Monofásico 1 HP (110-220 V)",
@@ -19,7 +19,7 @@ export const MOTORES: Product[] = [
     ],
     variantType: "dropdown",
     variants: [
-      { name: "1800 RPM", price: 0 },
+      { name: "1800 RPM", price: 1600000 },
       { name: "3600 RPM", price: 1500000 },
     ],
     specs: {
@@ -60,7 +60,7 @@ export const MOTORES: Product[] = [
     },
   },
 
-  //TODO faltan precio 1800
+  //TODO faltan precio 1800 acomodar
   {
     id: "motor-monofasico-2hp-110-220v",
     name: "Motor Monofásico 2 HP (110-220 V)",
@@ -78,7 +78,7 @@ export const MOTORES: Product[] = [
     ],
     variantType: "dropdown",
     variants: [
-      { name: "1800 RPM", price: 0 },
+      { name: "1800 RPM", price: 1900000 },
       { name: "3600 RPM", price: 1800000 },
     ],
     specs: {
