@@ -10,7 +10,7 @@ export const COMPRESORES: Product[] = [
     brand: "",
     description:
       "Este equipo de uso industrial  es perfecto para alimentar herramientas neumáticas como pistolas de pintura de baja presion, infladores, sopletes de limpieza y equipos de mantenimiento en talleres, hogares o pequeños negocios. Su funcionamiento monofásico permite conectarlo fácilmente a la red eléctrica convencional, haciéndolo práctico y versátil.",
-    price: 1500000,
+    price: 1600000,
     warranty: "1 Año",
     image: getImage(
       "productos/compresores/piston/compresor-monofasico-1hp.webp",
